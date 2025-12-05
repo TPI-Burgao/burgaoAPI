@@ -1,11 +1,11 @@
 import mysql, { Connection, QueryError } from 'mysql2';
 
 const dbConfig = {
-    host: '***',
+    host: 'mysql.railway.internal',
     port: 3306,
-    user: '***',
-    password: '***',
-    database: '***'
+    user: 'root',
+    password: 'BVgbSrfgxcIRMjmyTbPlNLDXUiAApenj',
+    database: 'railway'
 };
 
 const mysqlConnection: Connection = mysql.createConnection(dbConfig);
