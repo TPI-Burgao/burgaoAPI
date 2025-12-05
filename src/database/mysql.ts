@@ -1,11 +1,13 @@
+import dotenv from "dotenv";
+dotenv.config();
 import mysql, { Connection, QueryError } from 'mysql2';
 
 const dbConfig = {
-    host: 'mysql.railway.internal',
-    port: 3306,
-    user: 'root',
-    password: 'BVgbSrfgxcIRMjmyTbPlNLDXUiAApenj',
-    database: 'railway'
+    host: process.env.MYSQLHOST,
+    port: Number(process.env.MYSQLPORT),
+    user: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
+    database: process.env.MYSQLDATABASE 
 };
 
 const mysqlConnection: Connection = mysql.createConnection(dbConfig);
