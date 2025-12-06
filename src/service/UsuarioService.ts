@@ -26,12 +26,12 @@ export class UsuarioService {
         if(!cpf){
             throw new Error('Insira o CPF para buscar o usuário.');
         }
-        if(await this.existeAluno(cpf)){
+        if(await this.existeUsuario(cpf)){
             return this.usuarioRepository.BuscarUsuarioPorCPF(cpf);
         }
     }
 
-    private async existeAluno(cpf: string): Promise<boolean> {
+    private async existeUsuario(cpf: string): Promise<boolean> {
         const usuario = await this.usuarioRepository.BuscarUsuarioPorCPF(cpf);
         if(usuario == undefined){
             throw new Error('Usuário não encontrado.');
