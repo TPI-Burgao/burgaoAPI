@@ -73,8 +73,15 @@ export class UsuarioRepository{
         );
     }
 
-    async UpdateUsuario(){
+    async UpdateUsuario(data: UsuarioUpdateDto, cpf: string): Promise<Usuario | undefined>{
+        const query = `
+            UPDATE usuario 
+            SET nome = ?, email = ?, telefone = ?
+            WHERE cpf = ?`;
 
+        const resultado = await executarSQL(query,[data.nome, data.email, data.telefone, cpf]);
+        console.log('Usuário atualizado: ', resultado);
+        return this.BuscarUsuarioPorCPF(cpf);
     }
 
     private async DeleteUsuario(cpf: string): Promise<boolean>{
