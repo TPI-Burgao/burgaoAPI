@@ -15,18 +15,20 @@ export class UsuarioRepository{
         return this.instance;
     }
 
-    private async CreateTableUsuario(){
-        const query = `CREATE TABLE IF NOT EXISTS usuario(
-        cpf VARCHAR(255) AUTO_INCREMENT PRIMARY KEY,
-        nome VARCHAR(255) NOT NULL,
-        data_nasc Date NOT NULL,
-        email VARCHAR(255) NOT NULL,
-        senha VARCHAR(255) NOT NULL,
+    private async CreateTableUsuario(): Promise<void> {
+        const query = 
+        `CREATE TABLE IF NOT EXISTS usuario(
+            cpf VARCHAR(255) AUTO_INCREMENT PRIMARY KEY,
+            nome VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL,
+            senha VARCHAR(255) NOT NULL,
+            telefone VARCHAR(255) NOT NULL,
+            data_nasc Date NOT NULL,
         )`;
         try{
             const resultado = await executarSQL(query,[]);
-            console.log('Tabela usuário criada com sucesso');
-        }catch(err){
+            console.log('Tabela usuário criada: ', resultado);
+        }catch(err: any){
             console.error('Erro ao criar a tabela usuario: ', err);
         }
     }
