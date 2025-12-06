@@ -84,18 +84,13 @@ export class UsuarioRepository{
         return this.BuscarUsuarioPorCPF(cpf);
     }
 
-    private async DeleteUsuario(cpf: string): Promise<boolean>{
-        const query = `DELETE FROM usuario WHERE cpf = ?`
-        try{
-            const resultado = await executarSQL(query,[cpf]);
-            if(resultado.affectedRows === 0){
-                return false;
-            }
-            return true;
-        }catch(err){
-            console.error("Não foi possível deletar usuario ", err);
-            return false;
-        }
+    async DeleteUsuario(cpf: string): Promise<Usuario | undefined>{
+        const query = `DELETE FROM usuario WHERE cpf = ?`;
+        const usuario = await this.BuscarUsuarioPorCPF(cpf);
+        
+        const resultado = await executarSQL(query,[cpf]);
+        console.log('Usuário deletado: ', usuario, "\nResultado: ", resultado);
+        return usuario;
     }
 
 }
