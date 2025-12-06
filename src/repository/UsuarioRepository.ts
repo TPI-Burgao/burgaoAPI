@@ -42,7 +42,31 @@ export class UsuarioRepository{
         const resultado = await executarSQL(query,[data.cpf, data.nome, data.email, data.senha, data.telefone, data.dataNascimento]);
         console.log('Usuário inserido: ', resultado);
 
-        return new Usuario(data.cpf, data.nome, data.email, data.senha, data.telefone, data.dataNascimento);
+        return new Usuario(
+            data.cpf,
+            data.nome,
+            data.email,
+            data.senha,
+            data.telefone,
+            data.dataNascimento);
+    }
+
+    async BuscarUsuarioPorCPF(cpf: string): Promise<Usuario | undefined>{
+        const query = `SELECT * FROM usuario WHERE cpf = ?`;
+        const resultado = await executarSQL(query,[cpf]);
+        const usuario = resultado[0];
+
+        if(usuario == undefined) {
+            return undefined;
+        }
+        return new Usuario(
+            usuario.cpf,
+            usuario.nome,
+            usuario.email,
+            usuario.senha,
+            usuario.telefone,
+            usuario.data_nasc
+        );
     }
 
     private async UpdateUsuario(){
