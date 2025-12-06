@@ -5,7 +5,7 @@ import { UsuarioInsertDto } from '../model/dto/UsuarioInsertDto';
 export class UsuarioService {
     private usuarioRepository = UsuarioRepository.getInstance();
 
-    criarUsuario(data: UsuarioInsertDto) {
+    async criarUsuario(data: UsuarioInsertDto) {
         if(!data.cpf || !data.nome || !data.email || !data.senha || !data.telefone || !data.dataNascimento){
             throw new Error('Faltam informações para criar o usuário.');
         }
