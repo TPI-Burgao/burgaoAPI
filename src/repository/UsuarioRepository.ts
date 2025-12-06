@@ -25,6 +25,7 @@ export class UsuarioRepository{
             telefone VARCHAR(255) NOT NULL,
             data_nasc Date NOT NULL,
         )`;
+
         try{
             const resultado = await executarSQL(query,[]);
             console.log('Tabela usuário criada: ', resultado);
@@ -33,8 +34,15 @@ export class UsuarioRepository{
         }
     }
 
-    private async InsertUsuario(){
+    async InsertUsuario(data: Usuario): Promise<Usuario>{
+        const query = `
+            INSERT INTO usuario(cpf, nome, email, senha, telefone, data_nasc) 
+                VALUES(?, ?, ?, ?, ?, ?)`;
+    
+        const resultado = await executarSQL(query,[data.cpf, data.nome, data.email, data.senha, data.telefone, data.dataNascimento]);
+        console.log('Usuário inserido: ', resultado);
 
+        return new Usuario(data.cpf, data.nome, data.email, data.senha, data.telefone, data.dataNascimento);
     }
 
     private async UpdateUsuario(){
