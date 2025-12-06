@@ -1,5 +1,6 @@
 import { Usuario } from "../model/entity/Usuario";
 import { executarSQL } from "../database/mysql";
+import { UsuarioUpdateDto } from "../model/dto/UsuarioUpdateDto";
 
 export class UsuarioRepository{
     private static instance: UsuarioRepository;
@@ -57,8 +58,11 @@ export class UsuarioRepository{
         const usuario = resultado[0];
 
         if(usuario == undefined) {
+            console.log('Usuário não encontrado com CPF: ', cpf);
             return undefined;
         }
+
+        console.log('Usuário encontrado: ', usuario);
         return new Usuario(
             usuario.cpf,
             usuario.nome,
@@ -69,7 +73,7 @@ export class UsuarioRepository{
         );
     }
 
-    private async UpdateUsuario(){
+    async UpdateUsuario(){
 
     }
 
