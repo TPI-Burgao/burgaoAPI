@@ -61,7 +61,7 @@ export class UsuarioController {
         @Res() fail: TsoaResponse<400, { message: string }>
     ) {
         try {
-            await this.usuarioService.
+            await this.usuarioService.removerUsuario(cpf);
             return success(200, { message: "Usuário removido com sucesso." });
         } catch (error: any) {
             return fail(400, { message: `Erro ao remover o Usuário: ${error.message}` });
