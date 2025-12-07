@@ -1,4 +1,5 @@
 import { executarSQL } from "../database/mysql";
+import { ProdutoDto } from "../model/dto/ProdutoDto";
 import { Produto } from "../model/entity/Produto";
 
 export class ProdutoRepository {
@@ -35,7 +36,7 @@ export class ProdutoRepository {
         }
     }
 
-    async InsertProduto(data: Produto): Promise<Produto>{
+    async InsertProduto(data: ProdutoDto): Promise<Produto>{
         const query = `
             INSERT INTO produto(nome, URL, descricao, preco, categoria, disponivel) 
                 VALUES(?, ?, ?, ?, ?, ?)`;
