@@ -29,6 +29,15 @@ export class ProdutoService {
         }
     }
 
+    async atualizarProduto(data: ProdutoDto, id: number): Promise<Produto | undefined> {
+        if( !data || !id){
+            throw new Error('Faltam informações para atualizar o produto.');
+        }
+        if(await this.existeProduto(id)){
+            return await this.produtoRepository.UpdateProduto(data, id);
+        }
+    }
+
     private async existeProduto(id: number): Promise<boolean> {
         const produto = await this.produtoRepository.BuscarProdutoPorID(id);
         if(produto == undefined){
