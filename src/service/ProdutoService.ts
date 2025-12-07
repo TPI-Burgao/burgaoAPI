@@ -29,6 +29,14 @@ export class ProdutoService {
         }
     }
 
+    async listarProdutos(): Promise<Produto[]> {
+        const produtos = await this.produtoRepository.ListarProdutos();
+        if(produtos.length == 0){
+            throw new Error('Nenhum produto encontrado.');
+        }
+        return produtos;
+    }
+
     async atualizarProduto(data: ProdutoDto, id: number): Promise<Produto | undefined> {
         if( !data || !id){
             throw new Error('Faltam informações para atualizar o produto.');
