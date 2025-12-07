@@ -1,4 +1,4 @@
-export class ProdutoInsertDto {
+export class ProdutoDto {
     nome: string;
     URL: string;
     descricao: string
