@@ -1,4 +1,4 @@
-import { Body, Get, Path, Post, Put, Res, Route, Tags, TsoaResponse} from "tsoa";
+import { Body, Delete, Get, Path, Post, Put, Res, Route, Tags, TsoaResponse} from "tsoa";
 import { UsuarioService } from "../service/UsuarioService";
 import { UsuarioInsertDto } from "../model/dto/UsuarioInsertDto";
 import { Usuario } from "../model/entity/Usuario";
@@ -51,6 +51,20 @@ export class UsuarioController {
             return success(200, usuario);
         } catch (error: any) {
             return fail(400, { message: `Erro ao atualizar o Usuário: ${error.message}` });
+        }
+    }
+
+    @Delete("{cpf}")
+    async removerUsuario(
+        @Path("cpf") cpf: string,
+        @Res() success: TsoaResponse<200, { message: string }>,
+        @Res() fail: TsoaResponse<400, { message: string }>
+    ) {
+        try {
+            await this.usuarioService.
+            return success(200, { message: "Usuário removido com sucesso." });
+        } catch (error: any) {
+            return fail(400, { message: `Erro ao remover o Usuário: ${error.message}` });
         }
     }
 }

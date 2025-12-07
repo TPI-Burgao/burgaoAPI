@@ -39,7 +39,16 @@ export class UsuarioService {
         if(this.validarEmail(data.email) && await this.existeUsuario(cpf)){
             return await this.usuarioRepository.UpdateUsuario(data, cpf);
         }
-    } 
+    }
+
+    async removerUsuario(cpf: string): Promise<void> {
+        if(!cpf){
+            throw new Error('Insira o CPF para remover o usuário.');
+        }
+        if(await this.existeUsuario(cpf)){
+            await this.usuarioRepository.DeleteUsuario(cpf);
+        }
+    }
 
     private async existeUsuario(cpf: string): Promise<boolean> {
         const usuario = await this.usuarioRepository.BuscarUsuarioPorCPF(cpf);
