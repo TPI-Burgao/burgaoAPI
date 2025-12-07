@@ -5,8 +5,6 @@ export class Pedido {
     id: number;
     usuario: Usuario;
     produtos: Produto[];
-    qtdItens: number;
-    valorTotal: number;
     estado: string;
 
     constructor(
@@ -15,8 +13,6 @@ export class Pedido {
         id?: number
     ) {
         this.usuario = usuario;
-        this.qtdItens = 0;
-        this.valorTotal = 0;
         this.estado = "aberto";
         this.produtos = produtos || [];
         this.id = id || 0;

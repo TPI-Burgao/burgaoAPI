@@ -16,7 +16,7 @@ export class PedidoRepository {
 
     private async CreateTablePedido(): Promise<void> {
         const query =
-            `CREATE TABLE IF NOT EXISTS usuario(
+            `CREATE TABLE IF NOT EXISTS pedido(
             id INT AUTO_INCREMENT PRIMARY KEY,
             nome VARCHAR(255) NOT NULL,
             URL VARCHAR(255) NOT NULL,
