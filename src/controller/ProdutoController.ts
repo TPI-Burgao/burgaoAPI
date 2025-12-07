@@ -1,4 +1,4 @@
-import { Body, Get, Path, Post, Put, Res, Route, Tags, TsoaResponse } from "tsoa";
+import { Body, Delete, Get, Path, Post, Put, Res, Route, Tags, TsoaResponse } from "tsoa";
 import { ProdutoService } from "../service/ProdutoService";
 import { ProdutoDto } from "../model/dto/ProdutoDto";
 import { Produto } from "../model/entity/Produto";
@@ -49,6 +49,20 @@ export class ProdutoController {
             return success(200, produto);
         } catch (error: any) {
             return fail(400, { message: `Erro ao atualizar o Produto: ${error.message}` });
+        }
+    }
+
+    @Delete("{id}")
+    async removerProduto(
+        @Path("id") id: number,
+        @Res() success: TsoaResponse<200, { message: string}>,
+        @Res() fail: TsoaResponse<400, { message: string }>
+    ) {
+        try {
+            const produto = await this.produtoService.removerProduto(id);
+            return success(200, { message: 'Produto removido com sucesso.' });
+        } catch (error: any) {
+            return fail(400, { message: `Erro ao remover o Produto: ${error.message}` });
         }
     }
 }
