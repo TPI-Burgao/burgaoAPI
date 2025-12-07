@@ -19,4 +19,21 @@ export class ProdutoService {
         );
         return this.produtoRepository.InsertProduto(produto);
     }
+
+    async buscarProdutoID(id: number): Promise<Produto | undefined> {
+        if(!id){
+            throw new Error('Insira o ID para buscar o produto.');
+        }
+        if(await this.existeProduto(id)){
+            return this.produtoRepository.BuscarProdutoPorID(id);
+        }
+    }
+
+    private async existeProduto(id: number): Promise<boolean> {
+        const produto = await this.produtoRepository.BuscarProdutoPorID(id);
+        if(produto == undefined){
+            throw new Error('Produto não encontrado.');
+        }
+        return true;
+    }
 }
