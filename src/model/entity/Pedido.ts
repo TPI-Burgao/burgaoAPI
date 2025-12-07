@@ -11,8 +11,8 @@ export class Pedido {
 
     constructor(
         usuario: Usuario,
-        id?: number,
-        produtos?: Produto[]
+        produtos?: Produto[],
+        id?: number
     ) {
         this.usuario = usuario;
         this.qtdItens = 0;
