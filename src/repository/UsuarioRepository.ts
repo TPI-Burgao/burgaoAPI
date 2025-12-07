@@ -85,8 +85,8 @@ export class UsuarioRepository{
     }
 
     async DeleteUsuario(cpf: string): Promise<Usuario | undefined>{
-        const query = `DELETE FROM usuario WHERE cpf = ?`;
         const usuario = await this.BuscarUsuarioPorCPF(cpf);
+        const query = `DELETE FROM usuario WHERE cpf = ?`;
         
         const resultado = await executarSQL(query,[cpf]);
         console.log('Usuário deletado: ', usuario, "\nResultado: ", resultado);

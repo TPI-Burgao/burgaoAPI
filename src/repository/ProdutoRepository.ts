@@ -82,4 +82,12 @@ export class ProdutoRepository {
         console.log('Produto atualizado: ', resultado);
         return this.BuscarProdutoPorID(id);
     }
+
+    async DeleteProduto(id: number): Promise<void>{
+        const query = `DELETE FROM produto WHERE id = ?`;
+        const
+
+        const resultado = await executarSQL(query,[id]);
+        console.log('Produto deletado: ', resultado);
+    }
 }
