@@ -1,11 +1,11 @@
-import { Produto } from "../entity/Produto";
+import { PedidoProduto } from "../entity/PedidoProduto";
 import { Usuario } from "../entity/Usuario";
 
 export class PedidoDto {
     usuario: Usuario;
-    produtos: Produto[];
+    produtos: PedidoProduto[];
 
-    constructor(usuario: Usuario, produtos?: Produto[]){
+    constructor(usuario: Usuario, produtos?: PedidoProduto[]){
         this.usuario = usuario;
         this.produtos = produtos || [];
     }
