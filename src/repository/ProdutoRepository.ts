@@ -3,22 +3,22 @@ import { ProdutoDto } from "../model/dto/ProdutoDto";
 import { Produto } from "../model/entity/Produto";
 
 export class ProdutoRepository {
-     private static instance: ProdutoRepository;
-    
-    private constructor(){
+    private static instance: ProdutoRepository;
+
+    private constructor() {
         this.CreateTableProduto();
     }
 
-    static getInstance(){
-        if(!this.instance){
+    static getInstance() {
+        if (!this.instance) {
             this.instance = new ProdutoRepository();
         }
         return this.instance;
     }
 
     private async CreateTableProduto(): Promise<void> {
-        const query = 
-        `CREATE TABLE IF NOT EXISTS usuario(
+        const query =
+            `CREATE TABLE IF NOT EXISTS usuario(
             id INT AUTO_INCREMENT PRIMARY KEY,
             nome VARCHAR(255) NOT NULL,
             URL VARCHAR(255) NOT NULL,
@@ -28,20 +28,20 @@ export class ProdutoRepository {
             disponivel BOOLEAN NOT NULL
         )`;
 
-        try{
-            const resultado = await executarSQL(query,[]);
+        try {
+            const resultado = await executarSQL(query, []);
             console.log('Tabela produto criada: ', resultado);
-        }catch(err: any){
+        } catch (err: any) {
             console.error('Erro ao criar a tabela produto: ', err);
         }
     }
 
-    async InsertProduto(data: ProdutoDto): Promise<Produto>{
+    async InsertProduto(data: ProdutoDto): Promise<Produto> {
         const query = `
             INSERT INTO produto(nome, URL, descricao, preco, categoria, disponivel) 
                 VALUES(?, ?, ?, ?, ?, ?)`;
-    
-        const resultado = await executarSQL(query,[data.nome, data.URL, data.descricao, data.preco, data.categoria, data.disponivel]);
+
+        const resultado = await executarSQL(query, [data.nome, data.URL, data.descricao, data.preco, data.categoria, data.disponivel]);
         console.log('Produto inserido: ', resultado);
         return new Produto(
             data.nome,
@@ -52,12 +52,12 @@ export class ProdutoRepository {
             data.disponivel);
     }
 
-    async BuscarProdutoPorID(id: number): Promise<Produto | undefined>{
+    async BuscarProdutoPorID(id: number): Promise<Produto | undefined> {
         const query = `SELECT * FROM produto WHERE id = ?`;
-        const resultado = await executarSQL(query,[id]);
+        const resultado = await executarSQL(query, [id]);
         const produto = resultado[0];
 
-        if(produto == undefined) {
+        if (produto == undefined) {
             console.log('Produto não encontrado com ID: ', id);
             return undefined;
         }
@@ -73,21 +73,21 @@ export class ProdutoRepository {
         );
     }
 
-    async UpdateProduto(data: ProdutoDto, id: number): Promise<Produto | undefined>{
+    async UpdateProduto(data: ProdutoDto, id: number): Promise<Produto | undefined> {
         const query = `
             UPDATE produto 
             SET nome = ?, URL = ?, descricao = ?, preco = ?, categoria = ?, disponivel = ?
             WHERE id = ?`;
-        const resultado = await executarSQL(query,[data.nome, data.URL, data.descricao, data.preco, data.categoria, data.disponivel, id]);
+        const resultado = await executarSQL(query, [data.nome, data.URL, data.descricao, data.preco, data.categoria, data.disponivel, id]);
         console.log('Produto atualizado: ', resultado);
         return this.BuscarProdutoPorID(id);
     }
 
-    async DeleteProduto(id: number): Promise<void>{
+    async DeleteProduto(id: number): Promise<void> {
+        const produto = await this.BuscarProdutoPorID(id);
         const query = `DELETE FROM produto WHERE id = ?`;
-        const
 
-        const resultado = await executarSQL(query,[id]);
-        console.log('Produto deletado: ', resultado);
+        const resultado = await executarSQL(query, [id]);
+        console.log('Produto deletado: ', produto, 'Resultado: ', resultado);
     }
 }
