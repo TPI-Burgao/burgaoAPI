@@ -1,20 +1,20 @@
-import { Produto } from "./Produto";
+import { PedidoProduto } from "./PedidoProduto";
 import { Usuario } from "./Usuario";
 
 export class Pedido {
     id: number;
     usuario: Usuario;
-    produtos: Produto[];
+    produtos: PedidoProduto[];
     estado: string;
 
     constructor(
         usuario: Usuario,
-        produtos?: Produto[],
+        pedidoProduto?: PedidoProduto[],
         id?: number
     ) {
         this.usuario = usuario;
         this.estado = "aberto";
-        this.produtos = produtos || [];
+        this.produtos = pedidoProduto || [];
         this.id = id || 0;
     }
 }
