@@ -1,4 +1,4 @@
-import { Body, Get, Path, Post, Res, Route, Tags, TsoaResponse } from "tsoa";
+import { Body, Get, Path, Post, Put, Res, Route, Tags, TsoaResponse } from "tsoa";
 import { ProdutoService } from "../service/ProdutoService";
 import { ProdutoDto } from "../model/dto/ProdutoDto";
 import { Produto } from "../model/entity/Produto";
@@ -34,6 +34,21 @@ export class ProdutoController {
             return success(200, produto);
         } catch (error: any) {
             return fail(404, { message: `Produto não encontrado: ${error.message}` });
+        }
+    }
+
+    @Put("{id}")
+    async atualizarProduto(
+        @Path("id") id: number,
+        @Body() dto: ProdutoDto,
+        @Res() success: TsoaResponse<200, Produto | undefined>,
+        @Res() fail: TsoaResponse<400, { message: string }>
+    ) {
+        try {
+            const produto = await this.produtoService.atualizarProduto(dto, id);
+            return success(200, produto);
+        } catch (error: any) {
+            return fail(400, { message: `Erro ao atualizar o Produto: ${error.message}` });
         }
     }
 }
