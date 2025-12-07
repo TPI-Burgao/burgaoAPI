@@ -72,4 +72,14 @@ export class ProdutoRepository {
             produto.disponivel
         );
     }
+
+    async UpdateProduto(data: ProdutoDto, id: number): Promise<Produto | undefined>{
+        const query = `
+            UPDATE produto 
+            SET nome = ?, URL = ?, descricao = ?, preco = ?, categoria = ?, disponivel = ?
+            WHERE id = ?`;
+        const resultado = await executarSQL(query,[data.nome, data.URL, data.descricao, data.preco, data.categoria, data.disponivel, id]);
+        console.log('Produto atualizado: ', resultado);
+        return this.BuscarProdutoPorID(id);
+    }
 }
