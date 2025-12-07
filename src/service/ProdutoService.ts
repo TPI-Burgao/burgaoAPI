@@ -38,6 +38,15 @@ export class ProdutoService {
         }
     }
 
+    async removerProduto(id: number): Promise<void> {
+        if(!id){
+            throw new Error('Insira o ID para remover o produto.');
+        }
+        if(await this.existeProduto(id)){
+            return await this.produtoRepository.DeleteProduto(id);
+        }
+    }
+
     private async existeProduto(id: number): Promise<boolean> {
         const produto = await this.produtoRepository.BuscarProdutoPorID(id);
         if(produto == undefined){
