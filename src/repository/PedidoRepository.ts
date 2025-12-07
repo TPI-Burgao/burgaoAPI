@@ -1,4 +1,6 @@
 import { executarSQL } from "../database/mysql";
+import { PedidoDto } from "../model/dto/PedidoDto";
+import { Pedido } from "../model/entity/Pedido";
 
 export class PedidoRepository {
     private static instance: PedidoRepository;
@@ -37,5 +39,15 @@ export class PedidoRepository {
         } catch (err: any) {
             console.error('Erro ao criar a tabela produto: ', err);
         }
+    }
+
+    async InsertPedido(data: PedidoDto): Promise<Pedido> {
+        const query = `
+            INSERT INTO pedido(usuario_cpf, estado) 
+                VALUES(?, ?)`;
+
+        const resultado = await executarSQL(query, [data.usuario.cpf, "aberto"]);
+        console.log('Pedido inserido: ', resultado);
+        return new Pedido(data.usuario, data.produtos);
     }
 }
