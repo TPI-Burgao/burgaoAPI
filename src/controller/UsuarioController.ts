@@ -1,7 +1,8 @@
-import { Body, Get, Path, Post, Res, Route, Tags, TsoaResponse} from "tsoa";
+import { Body, Get, Path, Post, Put, Res, Route, Tags, TsoaResponse} from "tsoa";
 import { UsuarioService } from "../service/UsuarioService";
 import { UsuarioInsertDto } from "../model/dto/UsuarioInsertDto";
 import { Usuario } from "../model/entity/Usuario";
+import { UsuarioUpdateDto } from "../model/dto/UsuarioUpdateDto";
 
 @Route("usuarios")
 @Tags("Usarios")
@@ -36,5 +37,20 @@ export class UsuarioController {
         } catch (error: any) {
             return fail(404, { message: `Usuário não encontrado: ${error.message}` });
         }
-    } 
+    }
+
+    @Put("{cpf}")
+    async atualizarUsuario(
+        @Path("cpf") cpf: string,
+        @Body() dto: UsuarioUpdateDto,
+        @Res() success: TsoaResponse<200, Usuario | undefined>,
+        @Res() fail: TsoaResponse<400, { message: string }>
+    ) {
+        try {
+            const usuario = await this.usuarioService.atualizarUsuario(dto, cpf);
+            return success(200, usuario);
+        } catch (error: any) {
+            return fail(400, { message: `Erro ao atualizar o Usuário: ${error.message}` });
+        }
+    }
 }
