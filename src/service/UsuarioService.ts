@@ -1,6 +1,7 @@
 import { UsuarioRepository } from '../repository/UsuarioRepository';
 import { Usuario } from '../model/entity/Usuario';
 import { UsuarioInsertDto } from '../model/dto/UsuarioInsertDto';
+import { UsuarioUpdateDto } from '../model/dto/UsuarioUpdateDto';
 
 export class UsuarioService {
     private usuarioRepository = UsuarioRepository.getInstance();
@@ -30,6 +31,15 @@ export class UsuarioService {
             return this.usuarioRepository.BuscarUsuarioPorCPF(cpf);
         }
     }
+
+    async atualizarUsuario(data: UsuarioUpdateDto, cpf: string): Promise<Usuario | undefined> {
+        if( !data || !cpf){
+            throw new Error('Faltam informações para atualizar o usuário.');
+        }
+        if(this.validarEmail(data.email) && await this.existeUsuario(cpf)){
+            return await this.usuarioRepository.UpdateUsuario(data, cpf);
+        }
+    } 
 
     private async existeUsuario(cpf: string): Promise<boolean> {
         const usuario = await this.usuarioRepository.BuscarUsuarioPorCPF(cpf);
