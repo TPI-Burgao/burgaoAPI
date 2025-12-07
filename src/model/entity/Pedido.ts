@@ -11,16 +11,13 @@ export class Pedido {
 
     constructor(
         usuario: Usuario,
-        qtdItens: number,
-        valorTotal: number,
-        estado: string,
-        produtos?: Produto[],
-        id?: number
+        id?: number,
+        produtos?: Produto[]
     ) {
         this.usuario = usuario;
-        this.qtdItens = qtdItens;
-        this.valorTotal = valorTotal;
-        this.estado = estado;
+        this.qtdItens = 0;
+        this.valorTotal = 0;
+        this.estado = "aberto";
         this.produtos = produtos || [];
         this.id = id || 0;
     }
