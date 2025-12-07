@@ -23,6 +23,19 @@ export class ProdutoController {
         }
     }
 
+    @Get()
+    async listarProdutos(
+        @Res() success: TsoaResponse<200, Produto[]>,
+        @Res() fail: TsoaResponse<400, { message: string }>
+    ) {
+        try {
+            const produtos = await this.produtoService.listarProdutos();
+            return success(200, produtos);
+        } catch (error: any) {
+            return fail(400, { message: `Erro ao listar os Produtos: ${error.message}` });
+        }
+    }
+
     @Get("{id}")
     async exibirProduto(
         @Path("id") id: number,

@@ -52,6 +52,16 @@ export class ProdutoRepository {
             data.disponivel);
     }
 
+    async ListarProdutos(): Promise<Produto[]> {
+        const query = `SELECT * FROM produto`;
+        const resultado = await executarSQL(query, []);
+        if(resultado.length == 0){
+            return [];
+        }
+        console.log('Produtos encontrados: ', resultado);
+        return resultado;
+    }
+
     async BuscarProdutoPorID(id: number): Promise<Produto | undefined> {
         const query = `SELECT * FROM produto WHERE id = ?`;
         const resultado = await executarSQL(query, [id]);
