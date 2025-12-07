@@ -11,17 +11,17 @@ export class Pedido {
 
     constructor(
         usuario: Usuario,
-        produtos: Produto[],
         qtdItens: number,
         valorTotal: number,
         estado: string,
+        produtos?: Produto[],
         id?: number
     ) {
         this.usuario = usuario;
-        this.produtos = produtos;
         this.qtdItens = qtdItens;
         this.valorTotal = valorTotal;
         this.estado = estado;
+        this.produtos = produtos || [];
         this.id = id || 0;
     }
 }
