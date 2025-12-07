@@ -24,7 +24,7 @@ export class UsuarioRepository{
             email VARCHAR(255) NOT NULL,
             senha VARCHAR(255) NOT NULL,
             telefone VARCHAR(255) NOT NULL,
-            data_nasc Date NOT NULL,
+            data_nasc Date NOT NULL
         )`;
 
         try{

@@ -1,9 +1,21 @@
-import { UsuarioRepository } from "./repository/UsuarioRepository";
+import express from 'express';
+import { RegisterRoutes } from './routes/routes';
+import { setupSwagger } from './config/swagger';
 
+const app = express();
+const PORT = 3090;
 
-async function start() {
-    UsuarioRepository.getInstance();
-    console.log("Teste rodando...");
-}
+app.use(express.json());
 
-start();
+const apiRouter = express.Router();
+RegisterRoutes(apiRouter);
+
+app.use('/burgaoAPI', apiRouter);
+
+setupSwagger(app);
+
+app.listen(PORT, () => console.log(
+    "burgaoAPI rodando!" +
+    "\nDisponivel em: " + PORT + 
+    "\nLink do Swagger: http://localhost:" + PORT + "/api-docs"
+));
