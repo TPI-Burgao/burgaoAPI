@@ -15,7 +15,7 @@
             },
             "servers": [
                 {
-                    "url": "http://localhost:3090/cursosonline",
+                    "url": "http://localhost:3090/burgaoAPI",
                     "description": "Servidor de Desenvolvimento"
                 }
             ]
