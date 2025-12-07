@@ -5,6 +5,8 @@ import type { TsoaRoute } from '@tsoa/runtime';
 import {  fetchMiddlewares, ExpressTemplateService } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { UsuarioController } from './../controller/UsuarioController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { ProdutoController } from './../controller/ProdutoController';
 import type { Request as ExRequest, Response as ExResponse, RequestHandler, Router } from 'express';
 
 
@@ -44,6 +46,33 @@ const models: TsoaRoute.Models = {
             "nome": {"dataType":"string","required":true},
             "email": {"dataType":"string","required":true},
             "telefone": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ProdutoDto": {
+        "dataType": "refObject",
+        "properties": {
+            "nome": {"dataType":"string","required":true},
+            "URL": {"dataType":"string","required":true},
+            "descricao": {"dataType":"string","required":true},
+            "preco": {"dataType":"double","required":true},
+            "categoria": {"dataType":"string","required":true},
+            "disponivel": {"dataType":"boolean","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Produto": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"dataType":"double","required":true},
+            "nome": {"dataType":"string","required":true},
+            "URL": {"dataType":"string","required":true},
+            "descricao": {"dataType":"string","required":true},
+            "preco": {"dataType":"double","required":true},
+            "categoria": {"dataType":"string","required":true},
+            "disponivel": {"dataType":"boolean","required":true},
         },
         "additionalProperties": false,
     },
@@ -183,6 +212,166 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'removerUsuario',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsProdutoController_cadastrarProduto: Record<string, TsoaRoute.ParameterSchema> = {
+                dto: {"in":"body","name":"dto","required":true,"ref":"ProdutoDto"},
+                success: {"in":"res","name":"201","required":true,"dataType":"union","subSchemas":[{"ref":"Produto"},{"dataType":"undefined"}]},
+                fail: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
+        };
+        app.post('/produtos',
+            ...(fetchMiddlewares<RequestHandler>(ProdutoController)),
+            ...(fetchMiddlewares<RequestHandler>(ProdutoController.prototype.cadastrarProduto)),
+
+            async function ProdutoController_cadastrarProduto(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsProdutoController_cadastrarProduto, request, response });
+
+                const controller = new ProdutoController();
+
+              await templateService.apiHandler({
+                methodName: 'cadastrarProduto',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsProdutoController_listarProdutos: Record<string, TsoaRoute.ParameterSchema> = {
+                success: {"in":"res","name":"200","required":true,"dataType":"array","array":{"dataType":"refObject","ref":"Produto"}},
+                fail: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
+        };
+        app.get('/produtos',
+            ...(fetchMiddlewares<RequestHandler>(ProdutoController)),
+            ...(fetchMiddlewares<RequestHandler>(ProdutoController.prototype.listarProdutos)),
+
+            async function ProdutoController_listarProdutos(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsProdutoController_listarProdutos, request, response });
+
+                const controller = new ProdutoController();
+
+              await templateService.apiHandler({
+                methodName: 'listarProdutos',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsProdutoController_exibirProduto: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+                success: {"in":"res","name":"200","required":true,"dataType":"union","subSchemas":[{"ref":"Produto"},{"dataType":"undefined"}]},
+                fail: {"in":"res","name":"404","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
+        };
+        app.get('/produtos/:id',
+            ...(fetchMiddlewares<RequestHandler>(ProdutoController)),
+            ...(fetchMiddlewares<RequestHandler>(ProdutoController.prototype.exibirProduto)),
+
+            async function ProdutoController_exibirProduto(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsProdutoController_exibirProduto, request, response });
+
+                const controller = new ProdutoController();
+
+              await templateService.apiHandler({
+                methodName: 'exibirProduto',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsProdutoController_atualizarProduto: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+                dto: {"in":"body","name":"dto","required":true,"ref":"ProdutoDto"},
+                success: {"in":"res","name":"200","required":true,"dataType":"union","subSchemas":[{"ref":"Produto"},{"dataType":"undefined"}]},
+                fail: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
+        };
+        app.put('/produtos/:id',
+            ...(fetchMiddlewares<RequestHandler>(ProdutoController)),
+            ...(fetchMiddlewares<RequestHandler>(ProdutoController.prototype.atualizarProduto)),
+
+            async function ProdutoController_atualizarProduto(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsProdutoController_atualizarProduto, request, response });
+
+                const controller = new ProdutoController();
+
+              await templateService.apiHandler({
+                methodName: 'atualizarProduto',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsProdutoController_removerProduto: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+                success: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
+                fail: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
+        };
+        app.delete('/produtos/:id',
+            ...(fetchMiddlewares<RequestHandler>(ProdutoController)),
+            ...(fetchMiddlewares<RequestHandler>(ProdutoController.prototype.removerProduto)),
+
+            async function ProdutoController_removerProduto(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsProdutoController_removerProduto, request, response });
+
+                const controller = new ProdutoController();
+
+              await templateService.apiHandler({
+                methodName: 'removerProduto',
                 controller,
                 response,
                 next,
