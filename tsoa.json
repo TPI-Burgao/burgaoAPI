@@ -5,7 +5,7 @@
         "src/controller/**/*.ts"
     ],
     "spec": {
-        "outputDirectory": "dist",
+        "outputDirectory": ".",
         "specVersion": 3,
         "spec": {
             "info": {
