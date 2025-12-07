@@ -50,4 +50,25 @@ export class ProdutoRepository {
             data.categoria,
             data.disponivel);
     }
+
+    async BuscarProdutoPorID(id: number): Promise<Produto | undefined>{
+        const query = `SELECT * FROM produto WHERE id = ?`;
+        const resultado = await executarSQL(query,[id]);
+        const produto = resultado[0];
+
+        if(produto == undefined) {
+            console.log('Produto não encontrado com ID: ', id);
+            return undefined;
+        }
+
+        console.log('Produto encontrado: ', produto);
+        return new Produto(
+            produto.nome,
+            produto.URL,
+            produto.descricao,
+            produto.preco,
+            produto.categoria,
+            produto.disponivel
+        );
+    }
 }
