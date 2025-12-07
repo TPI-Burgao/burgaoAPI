@@ -18,13 +18,18 @@ export class PedidoRepository {
         const query =
             `CREATE TABLE IF NOT EXISTS pedido(
             id INT AUTO_INCREMENT PRIMARY KEY,
-            nome VARCHAR(255) NOT NULL,
-            URL VARCHAR(255) NOT NULL,
-            descricao VARCHAR(255) NOT NULL,
-            preco decimal(8,2) NOT NULL,
-            categoria VARCHAR(255) NOT NULL,
-            disponivel BOOLEAN NOT NULL
-        )`;
+            usuario_cpf VARCHAR(255) NOT NULL,
+            estado VARCHAR(255) NOT NULL
+            )
+            
+            CREATE TABLE IF NOT EXISTS PEDIDO_PRODUTO(
+                pedido_id INT NOT NULL,
+                produto_id INT NOT NULL,
+                qtd int NOT NULL,
+                FOREIGN KEY (pedido_id) REFERENCES pedido(id),
+                FOREIGN KEY (produto_id) REFERENCES produto(id)
+            )
+            `;
 
         try {
             const resultado = await executarSQL(query, []);
