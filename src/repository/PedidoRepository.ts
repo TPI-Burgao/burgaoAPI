@@ -50,4 +50,14 @@ export class PedidoRepository {
         console.log('Pedido inserido: ', resultado);
         return new Pedido(data.usuario);
     }
+
+    async listarIdProdutosPedido(id: number): Promise<Pedido[]> {
+        const query = `SELECT * FROM pedido_produto WHERE pedido_id = ?`;
+        const resultado = await executarSQL(query, [id]);
+        if(resultado.length == 0){
+            return [];
+        }
+        console.log('Produtos do pedido encontrados: ', resultado);
+        return resultado;
+    }
 }
