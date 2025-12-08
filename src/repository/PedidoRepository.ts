@@ -53,7 +53,7 @@ export class PedidoRepository {
         return new Pedido(data.usuario);
     }
 
-    async listarIdProdutosPedido(id: number): Promise<Pedido[]> {
+    async listarIdProdutosPedido(id: number): Promise<Pedido[] | undefined> {
         const query = `SELECT * FROM pedido_produto WHERE pedido_id = ?`;
         const resultado = await executarSQL(query, [id]);
         if(resultado.length == 0){
