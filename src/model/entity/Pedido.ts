@@ -9,12 +9,11 @@ export class Pedido {
 
     constructor(
         usuario: Usuario,
-        pedidoProduto?: PedidoProduto[],
         id?: number
     ) {
         this.usuario = usuario;
         this.estado = "aberto";
-        this.produtos = pedidoProduto || [];
+        this.produtos = [];
         this.id = id || 0;
     }
 }

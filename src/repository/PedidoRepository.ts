@@ -48,6 +48,6 @@ export class PedidoRepository {
 
         const resultado = await executarSQL(query, [data.usuario.cpf, "aberto"]);
         console.log('Pedido inserido: ', resultado);
-        return new Pedido(data.usuario, data.produtos);
+        return new Pedido(data.usuario);
     }
 }

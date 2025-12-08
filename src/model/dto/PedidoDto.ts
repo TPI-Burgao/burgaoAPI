@@ -5,8 +5,8 @@ export class PedidoDto {
     usuario: Usuario;
     produtos: PedidoProduto[];
 
-    constructor(usuario: Usuario, produtos?: PedidoProduto[]){
+    constructor(usuario: Usuario){
         this.usuario = usuario;
-        this.produtos = produtos || [];
+        this.produtos = [];
     }
 }
