@@ -17,6 +17,10 @@
                 {
                     "url": "http://localhost:3090/burgaoAPI",
                     "description": "Servidor de Desenvolvimento"
+                },
+                {
+                    "url": "https://burgaoapi-production.up.railway.app/burgaoAPI",
+                    "description": "Produção (Railway)"
                 }
             ]
         }
