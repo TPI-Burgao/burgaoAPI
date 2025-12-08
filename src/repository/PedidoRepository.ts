@@ -60,4 +60,20 @@ export class PedidoRepository {
         console.log('Produtos do pedido encontrados: ', resultado);
         return resultado;
     }
+
+    async buscarPedidoPorID(id: number): Promise<Pedido | undefined> {
+        const queryPedido = `SELECT * FROM pedido WHERE id = ?`;
+        const resultadoPedido = await executarSQL(queryPedido, [id]);
+
+        const queryPedidoProduto = `SELECT * FROM pedido_produto WHERE pedido_id = ?`;
+        const resultadoPedidoProduto = await executarSQL(queryPedidoProduto, [id]);
+
+        const pedido = resultadoPedido[0];
+        if(pedido == undefined){
+            console.log('Pedido não encontrado: ', resultadoPedido);
+            return undefined
+        }
+        console.log('Pedido encontrado: ', resultadoPedido);
+        return new Pedido(pedido.usuario_cpf, pedido.id, resultadoPedidoProduto);
+    }
 }
