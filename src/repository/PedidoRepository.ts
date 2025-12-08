@@ -96,4 +96,14 @@ export class PedidoRepository {
         console.log('Produto removido do pedido: ', resultado);
         return this.buscarPedidoPorID(pedido.id);
     }
+
+    async fecharPedido(pedido: Pedido): Promise<Pedido | undefined> {
+        const query = `
+            UPDATE pedido 
+                SET estado = ? 
+                WHERE id = ?`;
+        const resultado = await executarSQL(query, ["fechado", pedido.id]);
+        console.log('Pedido fechado: ', resultado);
+        return this.buscarPedidoPorID(pedido.id);
+    }
 }
