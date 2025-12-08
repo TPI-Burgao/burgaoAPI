@@ -22,6 +22,15 @@ export class PedidoService {
         }
     }
 
+    async buscarPedidoPorID(id: number): Promise<Pedido | undefined> {
+        if(!id){
+            throw new Error('Insira o ID do pedido.');
+        }
+        if(await this.existePedido(id)){
+            return this.pedidoRepository.buscarPedidoPorID(id);
+        }
+    }
+
     private async existePedido(id: number): Promise<boolean> {
         const pedido = await this.pedidoRepository.buscarPedidoPorID(id);
         if(pedido == undefined){
