@@ -2,6 +2,7 @@ import { executarSQL } from "../database/mysql";
 import { PedidoDto } from "../model/dto/PedidoDto";
 import { Pedido } from "../model/entity/Pedido";
 import { PedidoProduto } from "../model/entity/PedidoProduto";
+import { Produto } from "../model/entity/Produto";
 
 export class PedidoRepository {
     private static instance: PedidoRepository;
@@ -85,5 +86,14 @@ export class PedidoRepository {
         const resultado = await executarSQL(query, [pedido.id, produto.produto.id, produto.quantidade]);
         console.log('Produto adicionado ao pedido: ', resultado);
         return produto;
+    }
+
+    async rmvProdutoDePedido(pedido: Pedido, produto: Produto): Promise<Pedido | undefined> {
+        const query = `
+            DELETE FROM pedido_produto 
+                WHERE pedido_id = ? AND produto_id = ?`;
+        const resultado = await executarSQL(query, [pedido.id, produto.id]);
+        console.log('Produto removido do pedido: ', resultado);
+        return this.buscarPedidoPorID(pedido.id);
     }
 }
