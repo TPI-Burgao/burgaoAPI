@@ -1,6 +1,7 @@
 import { executarSQL } from "../database/mysql";
 import { PedidoDto } from "../model/dto/PedidoDto";
 import { Pedido } from "../model/entity/Pedido";
+import { PedidoProduto } from "../model/entity/PedidoProduto";
 
 export class PedidoRepository {
     private static instance: PedidoRepository;
@@ -75,5 +76,14 @@ export class PedidoRepository {
         }
         console.log('Pedido encontrado: ', resultadoPedido);
         return new Pedido(pedido.usuario_cpf, pedido.id, resultadoPedidoProduto);
+    }
+
+    async addProdutoAPedido(pedido: Pedido, produto: PedidoProduto): Promise<PedidoProduto> {
+        const query = `
+            INSERT INTO pedido_produto(pedido_id, produto_id, qtd) 
+                VALUES(?, ?, ?)`;
+        const resultado = await executarSQL(query, [pedido.id, produto.produto.id, produto.quantidade]);
+        console.log('Produto adicionado ao pedido: ', resultado);
+        return produto;
     }
 }
