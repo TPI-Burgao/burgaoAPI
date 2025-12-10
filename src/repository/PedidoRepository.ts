@@ -1,8 +1,10 @@
 import { executarSQL } from "../database/mysql";
-import { PedidoDto } from "../model/dto/PedidoDto";
+import { PedidoInsertDto } from "../model/dto/PedidoInsertDto";
+import { UsuarioViewDto } from "../model/dto/UsuarioViewDto";
 import { Pedido } from "../model/entity/Pedido";
 import { PedidoProduto } from "../model/entity/PedidoProduto";
 import { Produto } from "../model/entity/Produto";
+import { Usuario } from "../model/entity/Usuario";
 
 export class PedidoRepository {
     private static instance: PedidoRepository;
@@ -19,81 +21,125 @@ export class PedidoRepository {
     }
 
     private async CreateTablePedido(): Promise<void> {
-        const query =
+        const queryPedido =
             `CREATE TABLE IF NOT EXISTS pedido(
             id INT AUTO_INCREMENT PRIMARY KEY,
             usuario_cpf VARCHAR(255) NOT NULL,
             estado VARCHAR(255) NOT NULL
-            )
-            
-            CREATE TABLE IF NOT EXISTS PEDIDO_PRODUTO(
-                pedido_id INT NOT NULL PRIMARY KEY,
-                produto_id INT NOT NULL UNIQUE KEY,
-                qtd int NOT NULL,
-                FOREIGN KEY (pedido_id) REFERENCES pedido(id),
-                FOREIGN KEY (produto_id) REFERENCES produto(id)
-            )
+            );
+            `;
+        const queryPedidoProduto = `
+            CREATE TABLE IF NOT EXISTS pedido_produto(
+            pedido_id INT NOT NULL,
+            produto_id INT NOT NULL,
+            qtd int NOT NULL,
+            PRIMARY KEY (pedido_id, produto_id),
+            FOREIGN KEY (pedido_id) REFERENCES pedido(id),
+            FOREIGN KEY (produto_id) REFERENCES produto(id)
+            );
             `;
 
         try {
-            const resultado = await executarSQL(query, []);
-            console.log('Tabela produto criada: ', resultado);
+            const resultadoPedido = await executarSQL(queryPedido, []);
+            console.log('Tabela produto criada: ', resultadoPedido);
+            const resultadoPedidoProduto = await executarSQL(queryPedidoProduto, []);
+            console.log('Tabela produto criada: ', resultadoPedidoProduto);
         } catch (err: any) {
             console.error('Erro ao criar a tabela produto: ', err);
         }
     }
 
-    async InsertPedido(data: PedidoDto): Promise<Pedido> {
-        const query = `
+    async InsertPedido(data: PedidoInsertDto): Promise<Pedido> {
+        const queryPedido = `
             INSERT INTO pedido(usuario_cpf, estado) 
                 VALUES(?, ?)`;
 
-        const resultado = await executarSQL(query, [data.usuario.cpf, "aberto"]);
+        const resultado = await executarSQL(queryPedido, [data.usuario_cpf, "aberto"]);
         console.log('Pedido inserido: ', resultado);
-        return new Pedido(data.usuario, resultado.insertId);
+        return new Pedido(await this.obterUsuarioPorCPF(data.usuario_cpf), resultado.insertId);
     }
 
 
-    async buscarPedidoPorUsuario(cpf: string): Promise<Pedido | undefined> {
+    async buscarPedidoPorCPF(cpf: string): Promise<Pedido> {
         const queryPedidoProduto = `SELECT * FROM pedido WHERE usuario_cpf = ? AND estado = 'aberto'`;
         const resultadoPedidoProduto = await executarSQL(queryPedidoProduto, [cpf]);
-
         const pedido = resultadoPedidoProduto[0];
 
         if (pedido == undefined) {
             console.log('Pedido não encontrado: ', resultadoPedidoProduto);
+            throw new Error("Pedido não encontrado");
         }
 
         const pedidoProdutos = await this.listarProdutosPedido(new Pedido(pedido.usuario_cpf, pedido.id));
         return pedidoProdutos;
     }
 
-    async addProdutoAPedido(pedido: Pedido, pedidoProduto: PedidoProduto): Promise<PedidoProduto> {
+    async buscarPedidoPorID(id: number): Promise<Pedido> {
+        const queryPedidoProduto = `SELECT * FROM pedido WHERE id = ? AND estado = 'aberto'`;
+        const resultadoPedidoProduto = await executarSQL(queryPedidoProduto, [id]);
+        const pedido = resultadoPedidoProduto[0];
+
+        if (pedido == undefined) {
+            console.log('Pedido não encontrado: ', resultadoPedidoProduto);
+            throw new Error("Pedido não encontrado");
+        }
+
+        const pedidoProdutos = await this.listarProdutosPedido(new Pedido(pedido.usuario_cpf, pedido.id));
+        return pedidoProdutos;
+    }
+
+    async addProdutoAPedido(pedido_id: number, produto_id: number, quantidade: number): Promise<Pedido> {
         const query = `
         INSERT INTO pedido_produto(pedido_id, produto_id, qtd) 
         VALUES(?, ?, ?)`;
-        const resultado = await executarSQL(query, [pedido.id, pedidoProduto.produto.id, pedidoProduto.quantidade]);
+        const resultado = await executarSQL(query, [pedido_id, produto_id, quantidade]);
         console.log('Produto adicionado ao pedido: ', resultado);
-        return pedidoProduto;
+        return this.buscarPedidoPorID(pedido_id);
     }
 
-    async rmvProdutoDePedido(pedido: Pedido, produto: Produto): Promise<Pedido | undefined> {
+    async rmvProdutoDePedido(pedido_id: number, produto_id: number): Promise<Pedido> {
         const query = `
         DELETE FROM pedido_produto 
         WHERE pedido_id = ? AND produto_id = ?`;
-        const resultado = await executarSQL(query, [pedido.id, produto.id]);
+        const resultado = await executarSQL(query, [pedido_id, produto_id]);
         console.log('Produto removido do pedido: ', resultado);
-        return this.buscarPedidoPorUsuario(pedido.usuario.cpf);
+        return this.buscarPedidoPorID(pedido_id);
     }
 
-    async fecharPedido(pedido: Pedido): Promise<Pedido | undefined> {
+    async editProdutoDePedido(pedido_id: number, produto_id: number, quantidade: number): Promise<Pedido> {
+        const query = `
+        UPDATE pedido_produto
+        SET qtd = ?
+        WHERE pedido_id = ? AND produto_id = ?`;
+        const resultado = await executarSQL(query, [quantidade, pedido_id, produto_id]);
+        console.log('Quantidade do produto no pedido alterada: ', resultado);
+        return this.buscarPedidoPorID(pedido_id);
+    }   
+
+    async fecharPedido(pedido_id: number): Promise<Pedido> {
         const query = `
         UPDATE pedido 
         SET estado = ? 
         WHERE id = ?`;
-        const resultado = await executarSQL(query, ["fechado", pedido.id]);
+        const resultado = await executarSQL(query, ["fechado", pedido_id]);
         console.log('Pedido fechado: ', resultado);
-        return this.buscarPedidoPorUsuario(pedido.usuario.cpf);
+        return this.buscarPedidoPorID(pedido_id);
+    }
+
+    private async obterUsuarioPorCPF(cpf: string): Promise<UsuarioViewDto> {
+        const query = `SELECT * FROM usuario WHERE cpf = ?`;
+        const resultado = await executarSQL(query, [cpf]);
+        const usuario = resultado[0];
+        if (usuario == undefined) {
+            throw new Error("Usuário não encontrado");
+        }
+        return new UsuarioViewDto(
+            usuario.cpf,
+            usuario.nome,
+            usuario.email,
+            usuario.telefone,
+            usuario.dataNascimento
+        );
     }
 
     private async listarProdutosPedido(pedido: Pedido): Promise<Pedido> {
@@ -110,7 +156,7 @@ export class PedidoRepository {
         const pedidoProduto = this.converterPedidoProduto(pedido, resultadoPedidoProduto, resultadoProdutos);
 
         console.log('Produtos do pedido encontrados: ', resultadoPedidoProduto, resultadoProdutos);
-        return new Pedido(pedido.usuario, pedido.id, pedidoProduto);
+        return new Pedido(await this.obterUsuarioPorCPF(pedido.usuario.cpf), pedido.id, pedidoProduto);
     }
 
     private converterPedidoProduto(pedido: Pedido, dataPedidoProduto: any[], dataProdutos: any[]): PedidoProduto[] {
