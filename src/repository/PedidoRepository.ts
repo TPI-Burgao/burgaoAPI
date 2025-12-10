@@ -56,7 +56,7 @@ export class PedidoRepository {
 
         const resultado = await executarSQL(queryPedido, [data.usuario_cpf, "aberto"]);
         console.log('Pedido inserido: ', resultado);
-        return new Pedido(await this.obterUsuarioPorCPF(data.usuario_cpf), resultado.insertId);
+        return new Pedido((await this.obterUsuarioPorCPF(data.usuario_cpf)).cpf, resultado.insertId);
     }
 
 
@@ -156,7 +156,7 @@ export class PedidoRepository {
         const pedidoProduto = this.converterPedidoProduto(pedido, resultadoPedidoProduto, resultadoProdutos);
 
         console.log('Produtos do pedido encontrados: ', resultadoPedidoProduto, resultadoProdutos);
-        return new Pedido(await this.obterUsuarioPorCPF(pedido.usuario.cpf), pedido.id, pedidoProduto);
+        return new Pedido((await this.obterUsuarioPorCPF(pedido.usuario_cpf)).cpf, pedido.id, pedidoProduto);
     }
 
     private converterPedidoProduto(pedido: Pedido, dataPedidoProduto: any[], dataProdutos: any[]): PedidoProduto[] {
