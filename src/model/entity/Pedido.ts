@@ -12,11 +12,12 @@ export class Pedido {
         usuario_cpf: string,
         id?: number,
         pedidoProduto?: PedidoProduto[],
+        estado?: string,
         pagamento?: string
     ) {
         this.usuario_cpf = usuario_cpf;
         this.pagamento = pagamento || "não definido";
-        this.estado = "aberto";
+        this.estado = estado ||"aberto";
         this.produtos = pedidoProduto || [];
         this.id = id || 0;
     }

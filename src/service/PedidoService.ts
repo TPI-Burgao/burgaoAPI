@@ -1,5 +1,6 @@
 import { PedidoInsertDto } from "../model/dto/PedidoInsertDto";
-import { PedidoProdutoInsertEditDto } from "../model/dto/PedidoProdutoInsertEditDto";
+import { PedidoProdutoEditDto } from "../model/dto/PedidoProdutoEditDto";
+import { PedidoProdutoInsertDto } from "../model/dto/PedidoProdutoInsertDto";
 import { PedidoProdutoRemoveDto } from "../model/dto/PedidoProdutoRemoveDto";
 import { Pedido } from "../model/entity/Pedido";
 import { PedidoRepository } from "../repository/PedidoRepository";
@@ -24,17 +25,24 @@ export class PedidoService {
         }
     }
 
-    async adicionarProdutoPedido(produto: PedidoProdutoInsertEditDto): Promise<Pedido> {
+    async listarPedidosFechadosUsuario(cpf: string): Promise<Pedido[]> {
+        if(!cpf){
+            throw new Error('Insira o CPF dos pedidos do Usuário.');
+        }
+        return await this.pedidoRepository.listarPedidosFechadosCPF(cpf);
+    }
+
+    async adicionarProdutoPedido(produto: PedidoProdutoInsertDto): Promise<Pedido> {
         if(!produto){
             throw new Error('Faltam informações para adicionar o produto ao pedido.');
         }
-        if(await this.existePedidoID(produto.pedido_id)){
-            await this.pedidoRepository.addProdutoAPedido(produto.pedido_id, produto.produto_id, produto.quantidade);
+        if(await this.existePedidoCPF(produto.usuario_cpf)){
+            await this.pedidoRepository.addProdutoAPedido(produto.usuario_cpf, produto.produto_id, produto.quantidade);
         }
-        return await this.pedidoRepository.buscarPedidoPorID(produto.pedido_id);
+        return await this.pedidoRepository.buscarPedidoPorCPF(produto.usuario_cpf);
     }
 
-    async alterarQtdProdutoPedido(produto: PedidoProdutoInsertEditDto){
+    async alterarQtdProdutoPedido(produto: PedidoProdutoEditDto){
         if(!produto){
             throw new Error('Faltam informações para alterar a quantidade do produto no pedido.');
         }
@@ -48,18 +56,18 @@ export class PedidoService {
         if(!produto){
             throw new Error('Faltam informações para remover adicionar o produto ao pedido.');
         }
-        if(await this.existePedidoID(produto.pedido_id)){
-            this.pedidoRepository.rmvProdutoDePedido(produto.pedido_id, produto.produto_id);
+        if(await this.existePedidoCPF(produto.usuario_cpf)){
+            this.pedidoRepository.rmvProdutoDePedido(produto.usuario_cpf, produto.produto_id);
         }
-        return this.pedidoRepository.buscarPedidoPorID(produto.pedido_id);
+        return this.pedidoRepository.buscarPedidoPorCPF(produto.usuario_cpf);
     }
 
-    async fecharPedido(pedido_id: number): Promise<void> {
-        if(!pedido_id){
-            throw new Error('Insira o ID do pedido para fechá-lo.');
+    async fecharPedido(cpf: string, pagamento: string): Promise<void> {
+        if(!cpf){
+            throw new Error('Insira o cpf do usuário para fechar o pedido');
         }
-        if(await this.existePedidoID(pedido_id)){
-            return this.pedidoRepository.fecharPedido(pedido_id);
+        if(await this.existePedidoCPF(cpf)){
+            return this.pedidoRepository.fecharPedido(cpf, pagamento);
         }
     }
     

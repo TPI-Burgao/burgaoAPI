@@ -2,8 +2,9 @@ import { Body, Delete, Get, Patch, Path, Post, Put, Res, Route, Tags, TsoaRespon
 import { PedidoService } from "../service/PedidoService";
 import { PedidoInsertDto } from "../model/dto/PedidoInsertDto";
 import { Pedido } from "../model/entity/Pedido";
-import { PedidoProdutoInsertEditDto } from "../model/dto/PedidoProdutoInsertEditDto";
+import { PedidoProdutoInsertDto } from "../model/dto/PedidoProdutoInsertDto";
 import { PedidoProdutoRemoveDto } from "../model/dto/PedidoProdutoRemoveDto";
+import { PedidoProdutoEditDto } from "../model/dto/PedidoProdutoEditDto";
 
 @Route("pedidos")
 @Tags("Pedidos")
@@ -27,7 +28,7 @@ export class PedidoController {
 
     @Post("/produtos")
     async cadastrarProdutoPedido(
-        @Body() dto: PedidoProdutoInsertEditDto,
+        @Body() dto: PedidoProdutoInsertDto,
         @Res() success: TsoaResponse<201, Pedido | undefined>,
         @Res() fail: TsoaResponse<400, { message: string }>
     ) {
@@ -52,10 +53,23 @@ export class PedidoController {
             return fail(404, { message: `Pedido não encontrado: ${error.message}` });
         }
     }
+    @Get("/historico/{cpf}")
+    async exibirHistoricoPedidos(
+        @Path("cpf") cpf: string,
+        @Res() success: TsoaResponse<200, Pedido[] | undefined>,
+        @Res() fail: TsoaResponse<404, { message: string }>
+    ) {
+        try {
+            const pedidos = await this.pedidoService.listarPedidosFechadosUsuario(cpf);
+            return success(200, pedidos);
+        } catch (error: any) {
+            return fail(404, { message: `Pedidos não encontrados: ${error.message}` });
+        }
+    }
 
     @Put("/produtos")
     async alterarProdutoPedido(
-        @Body() dto: PedidoProdutoInsertEditDto,
+        @Body() dto: PedidoProdutoEditDto,
         @Res() success: TsoaResponse<200, Pedido | undefined>,
         @Res() fail: TsoaResponse<400, { message: string }>
     ) {
@@ -81,15 +95,15 @@ export class PedidoController {
         }
     }
 
-    @Patch("/{id}/fechar")
+    @Patch("/{cpf}/fechar")
     async fecharPedido(
-        @Path("id") id: number,
+        @Path("cpf") cpf: string,
         @Body() dto: { pagamento: string },
         @Res() success: TsoaResponse<200, { message: string }>,
         @Res() fail: TsoaResponse<400, { message: string }>
     ) {
         try {
-            await this.pedidoService.fecharPedido(id);
+            await this.pedidoService.fecharPedido(cpf, dto.pagamento);
             return success(200, { message: 'Pedido fechado com sucesso.' });
         } catch (error: any) {
             return fail(400, { message: error.message });

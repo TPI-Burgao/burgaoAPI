@@ -113,7 +113,17 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "PedidoProdutoInsertEditDto": {
+    "PedidoProdutoInsertDto": {
+        "dataType": "refObject",
+        "properties": {
+            "usuario_cpf": {"dataType":"string","required":true},
+            "produto_id": {"dataType":"double","required":true},
+            "quantidade": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "PedidoProdutoEditDto": {
         "dataType": "refObject",
         "properties": {
             "pedido_id": {"dataType":"double","required":true},
@@ -126,7 +136,7 @@ const models: TsoaRoute.Models = {
     "PedidoProdutoRemoveDto": {
         "dataType": "refObject",
         "properties": {
-            "pedido_id": {"dataType":"double","required":true},
+            "usuario_cpf": {"dataType":"string","required":true},
             "produto_id": {"dataType":"double","required":true},
         },
         "additionalProperties": false,
@@ -504,7 +514,7 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsPedidoController_cadastrarProdutoPedido: Record<string, TsoaRoute.ParameterSchema> = {
-                dto: {"in":"body","name":"dto","required":true,"ref":"PedidoProdutoInsertEditDto"},
+                dto: {"in":"body","name":"dto","required":true,"ref":"PedidoProdutoInsertDto"},
                 success: {"in":"res","name":"201","required":true,"dataType":"union","subSchemas":[{"ref":"Pedido"},{"dataType":"undefined"}]},
                 fail: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
         };
@@ -567,8 +577,40 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsPedidoController_exibirHistoricoPedidos: Record<string, TsoaRoute.ParameterSchema> = {
+                cpf: {"in":"path","name":"cpf","required":true,"dataType":"string"},
+                success: {"in":"res","name":"200","required":true,"dataType":"union","subSchemas":[{"dataType":"array","array":{"dataType":"refObject","ref":"Pedido"}},{"dataType":"undefined"}]},
+                fail: {"in":"res","name":"404","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
+        };
+        app.get('/pedidos/historico/:cpf',
+            ...(fetchMiddlewares<RequestHandler>(PedidoController)),
+            ...(fetchMiddlewares<RequestHandler>(PedidoController.prototype.exibirHistoricoPedidos)),
+
+            async function PedidoController_exibirHistoricoPedidos(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsPedidoController_exibirHistoricoPedidos, request, response });
+
+                const controller = new PedidoController();
+
+              await templateService.apiHandler({
+                methodName: 'exibirHistoricoPedidos',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsPedidoController_alterarProdutoPedido: Record<string, TsoaRoute.ParameterSchema> = {
-                dto: {"in":"body","name":"dto","required":true,"ref":"PedidoProdutoInsertEditDto"},
+                dto: {"in":"body","name":"dto","required":true,"ref":"PedidoProdutoEditDto"},
                 success: {"in":"res","name":"200","required":true,"dataType":"union","subSchemas":[{"ref":"Pedido"},{"dataType":"undefined"}]},
                 fail: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
         };
@@ -632,12 +674,12 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsPedidoController_fecharPedido: Record<string, TsoaRoute.ParameterSchema> = {
-                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+                cpf: {"in":"path","name":"cpf","required":true,"dataType":"string"},
                 dto: {"in":"body","name":"dto","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"pagamento":{"dataType":"string","required":true}}},
                 success: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
                 fail: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
         };
-        app.patch('/pedidos/:id/fechar',
+        app.patch('/pedidos/:cpf/fechar',
             ...(fetchMiddlewares<RequestHandler>(PedidoController)),
             ...(fetchMiddlewares<RequestHandler>(PedidoController.prototype.fecharPedido)),
 
