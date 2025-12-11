@@ -6,6 +6,8 @@ export class Produto {
     preco: number;
     categoria: string;
     disponivel: boolean;
+    promo?: boolean;
+    desconto?: number;
 
     constructor(
         nome: string,
@@ -14,6 +16,8 @@ export class Produto {
         preco: number,
         categoria: string,
         disponivel: boolean,
+        promo?: boolean,
+        desconto?: number,
         id?: number) {
         this.nome = nome;
         this.URL = URL;
@@ -22,5 +26,7 @@ export class Produto {
         this.categoria = categoria;
         this.disponivel = disponivel;
         this.id = id || 0;
+        this.promo = promo || false;
+        this.desconto = desconto || 0;
     }
 }
