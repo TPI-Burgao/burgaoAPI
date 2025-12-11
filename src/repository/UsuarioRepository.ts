@@ -89,6 +89,9 @@ export class UsuarioRepository{
             SET senha = ?
             WHERE cpf = ? AND senha = ?`;
         const resultado = await executarSQL(query,[novaSenha, cpf, senhaAntiga]);
+        if(resultado.affectedRows === 0){
+            throw new Error('Senha antiga incorreta.');
+        }
         console.log('Senha do usuário atualizada: ', resultado);
     }
 

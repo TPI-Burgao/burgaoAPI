@@ -3,6 +3,7 @@ import { UsuarioService } from "../service/UsuarioService";
 import { UsuarioInsertDto } from "../model/dto/UsuarioInsertDto";
 import { Usuario } from "../model/entity/Usuario";
 import { UsuarioUpdateDto } from "../model/dto/UsuarioUpdateDto";
+import { UsuarioViewDto } from "../model/dto/UsuarioViewDto";
 
 @Route("usuarios")
 @Tags("Usarios")
@@ -13,7 +14,7 @@ export class UsuarioController {
     @Post()
     async cadastrarUsuario(
         @Body() dto: UsuarioInsertDto,
-        @Res() success: TsoaResponse<201, Usuario | undefined>,
+        @Res() success: TsoaResponse<201, UsuarioViewDto | undefined>,
         @Res() fail: TsoaResponse<400, { message: string }>
     )
     {
@@ -28,7 +29,7 @@ export class UsuarioController {
     @Get("{cpf}")
     async exibirUsuario(
         @Path("cpf") cpf: string,
-        @Res() success: TsoaResponse<200, Usuario | undefined>,
+        @Res() success: TsoaResponse<200, UsuarioViewDto | undefined>,
         @Res() fail: TsoaResponse<404, { message: string }>
     ) {
         try {
@@ -43,7 +44,7 @@ export class UsuarioController {
     async atualizarUsuario(
         @Path("cpf") cpf: string,
         @Body() dto: UsuarioUpdateDto,
-        @Res() success: TsoaResponse<200, Usuario | undefined>,
+        @Res() success: TsoaResponse<200, UsuarioViewDto | undefined>,
         @Res() fail: TsoaResponse<400, { message: string }>
     ) {
         try {
@@ -51,6 +52,21 @@ export class UsuarioController {
             return success(200, usuario);
         } catch (error: any) {
             return fail(400, { message: `Erro ao atualizar o Usuário: ${error.message}` });
+        }
+    }
+
+    @Put("{cpf}/senha")
+    async atualizarSenhaUsuario(
+        @Path("cpf") cpf: string,
+        @Body() dto: { senhaAntiga: string; novaSenha: string },
+        @Res() success: TsoaResponse<200, { message: string }>,
+        @Res() fail: TsoaResponse<400, { message: string }>
+    ) {
+        try {
+            await this.usuarioService.atualizarSenhaUsuario(dto.senhaAntiga, dto.novaSenha, cpf);
+            return success(200, { message: "Senha do usuário atualizada com sucesso." });
+        } catch (error: any) {
+            return fail(400, { message: `Erro ao atualizar a senha do Usuário: ${error.message}` });
         }
     }
 

@@ -29,13 +29,12 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Usuario": {
+    "UsuarioViewDto": {
         "dataType": "refObject",
         "properties": {
             "cpf": {"dataType":"string","required":true},
             "nome": {"dataType":"string","required":true},
             "email": {"dataType":"string","required":true},
-            "senha": {"dataType":"string","required":true},
             "telefone": {"dataType":"string","required":true},
             "dataNascimento": {"dataType":"datetime","required":true},
         },
@@ -152,7 +151,7 @@ export function RegisterRoutes(app: Router) {
     
         const argsUsuarioController_cadastrarUsuario: Record<string, TsoaRoute.ParameterSchema> = {
                 dto: {"in":"body","name":"dto","required":true,"ref":"UsuarioInsertDto"},
-                success: {"in":"res","name":"201","required":true,"dataType":"union","subSchemas":[{"ref":"Usuario"},{"dataType":"undefined"}]},
+                success: {"in":"res","name":"201","required":true,"dataType":"union","subSchemas":[{"ref":"UsuarioViewDto"},{"dataType":"undefined"}]},
                 fail: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
         };
         app.post('/usuarios',
@@ -184,7 +183,7 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsUsuarioController_exibirUsuario: Record<string, TsoaRoute.ParameterSchema> = {
                 cpf: {"in":"path","name":"cpf","required":true,"dataType":"string"},
-                success: {"in":"res","name":"200","required":true,"dataType":"union","subSchemas":[{"ref":"Usuario"},{"dataType":"undefined"}]},
+                success: {"in":"res","name":"200","required":true,"dataType":"union","subSchemas":[{"ref":"UsuarioViewDto"},{"dataType":"undefined"}]},
                 fail: {"in":"res","name":"404","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
         };
         app.get('/usuarios/:cpf',
@@ -217,7 +216,7 @@ export function RegisterRoutes(app: Router) {
         const argsUsuarioController_atualizarUsuario: Record<string, TsoaRoute.ParameterSchema> = {
                 cpf: {"in":"path","name":"cpf","required":true,"dataType":"string"},
                 dto: {"in":"body","name":"dto","required":true,"ref":"UsuarioUpdateDto"},
-                success: {"in":"res","name":"200","required":true,"dataType":"union","subSchemas":[{"ref":"Usuario"},{"dataType":"undefined"}]},
+                success: {"in":"res","name":"200","required":true,"dataType":"union","subSchemas":[{"ref":"UsuarioViewDto"},{"dataType":"undefined"}]},
                 fail: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
         };
         app.put('/usuarios/:cpf',
@@ -236,6 +235,39 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'atualizarUsuario',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsUsuarioController_atualizarSenhaUsuario: Record<string, TsoaRoute.ParameterSchema> = {
+                cpf: {"in":"path","name":"cpf","required":true,"dataType":"string"},
+                dto: {"in":"body","name":"dto","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"novaSenha":{"dataType":"string","required":true},"senhaAntiga":{"dataType":"string","required":true}}},
+                success: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
+                fail: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
+        };
+        app.put('/usuarios/:cpf/senha',
+            ...(fetchMiddlewares<RequestHandler>(UsuarioController)),
+            ...(fetchMiddlewares<RequestHandler>(UsuarioController.prototype.atualizarSenhaUsuario)),
+
+            async function UsuarioController_atualizarSenhaUsuario(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsUsuarioController_atualizarSenhaUsuario, request, response });
+
+                const controller = new UsuarioController();
+
+              await templateService.apiHandler({
+                methodName: 'atualizarSenhaUsuario',
                 controller,
                 response,
                 next,
