@@ -1,6 +1,7 @@
 import { Usuario } from "../model/entity/Usuario";
 import { executarSQL } from "../database/mysql";
 import { UsuarioUpdateDto } from "../model/dto/UsuarioUpdateDto";
+import { UsuarioViewDto } from "../model/dto/UsuarioViewDto";
 
 export class UsuarioRepository{
     private static instance: UsuarioRepository;
@@ -18,14 +19,14 @@ export class UsuarioRepository{
 
     private async CreateTableUsuario(): Promise<void> {
         const query = 
-        `CREATE TABLE IF NOT EXISTS usuario(
-            cpf VARCHAR(255) PRIMARY KEY,
-            nome VARCHAR(255) NOT NULL,
-            email VARCHAR(255) NOT NULL,
-            senha VARCHAR(255) NOT NULL,
-            telefone VARCHAR(255) NOT NULL,
-            data_nasc Date NOT NULL
-        )`;
+            `CREATE TABLE IF NOT EXISTS usuario(
+                cpf VARCHAR(255) PRIMARY KEY,
+                nome VARCHAR(255) NOT NULL,
+                email VARCHAR(255) NOT NULL,
+                senha VARCHAR(255) NOT NULL,
+                telefone VARCHAR(255) NOT NULL,
+                data_nasc Date NOT NULL
+            )`;
 
         try{
             const resultado = await executarSQL(query,[]);
@@ -35,7 +36,7 @@ export class UsuarioRepository{
         }
     }
 
-    async InsertUsuario(data: Usuario): Promise<Usuario>{
+    async InsertUsuario(data: Usuario): Promise<UsuarioViewDto>{
         const query = `
             INSERT INTO usuario(cpf, nome, email, senha, telefone, data_nasc) 
                 VALUES(?, ?, ?, ?, ?, ?)`;
@@ -43,16 +44,15 @@ export class UsuarioRepository{
         const resultado = await executarSQL(query,[data.cpf, data.nome, data.email, data.senha, data.telefone, data.dataNascimento]);
         console.log('Usuário inserido: ', resultado);
 
-        return new Usuario(
+        return new UsuarioViewDto(
             data.cpf,
             data.nome,
             data.email,
-            data.senha,
             data.telefone,
             data.dataNascimento);
     }
 
-    async BuscarUsuarioPorCPF(cpf: string): Promise<Usuario | undefined>{
+    async BuscarUsuarioPorCPF(cpf: string): Promise<UsuarioViewDto | undefined>{
         const query = `SELECT * FROM usuario WHERE cpf = ?`;
         const resultado = await executarSQL(query,[cpf]);
         const usuario = resultado[0];
@@ -63,17 +63,16 @@ export class UsuarioRepository{
         }
 
         console.log('Usuário encontrado: ', usuario);
-        return new Usuario(
+        return new UsuarioViewDto(
             usuario.cpf,
             usuario.nome,
             usuario.email,
-            usuario.senha,
             usuario.telefone,
             usuario.data_nasc
         );
     }
 
-    async UpdateUsuario(data: UsuarioUpdateDto, cpf: string): Promise<Usuario | undefined>{
+    async UpdateUsuario(data: UsuarioUpdateDto, cpf: string): Promise<UsuarioViewDto | undefined>{
         const query = `
             UPDATE usuario 
             SET nome = ?, email = ?, telefone = ?
@@ -84,7 +83,16 @@ export class UsuarioRepository{
         return this.BuscarUsuarioPorCPF(cpf);
     }
 
-    async DeleteUsuario(cpf: string): Promise<Usuario | undefined>{
+    async UpdateSenhaUsuario(senhaAntiga: string, novaSenha: string, cpf: string): Promise<void>{
+        const query = `
+            UPDATE usuario 
+            SET senha = ?
+            WHERE cpf = ? AND senha = ?`;
+        const resultado = await executarSQL(query,[novaSenha, cpf, senhaAntiga]);
+        console.log('Senha do usuário atualizada: ', resultado);
+    }
+
+    async DeleteUsuario(cpf: string): Promise<UsuarioViewDto | undefined>{
         const usuario = await this.BuscarUsuarioPorCPF(cpf);
         const query = `DELETE FROM usuario WHERE cpf = ?`;
         
