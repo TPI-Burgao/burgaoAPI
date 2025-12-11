@@ -30,10 +30,10 @@ export class PedidoRepository {
             `;
         const queryPedidoProduto = `
             CREATE TABLE IF NOT EXISTS pedido_produto(
+            id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
             pedido_id INT NOT NULL,
             produto_id INT NOT NULL,
             qtd int NOT NULL,
-            PRIMARY KEY (pedido_id, produto_id),
             FOREIGN KEY (pedido_id) REFERENCES pedido(id),
             FOREIGN KEY (produto_id) REFERENCES produto(id)
             );
@@ -41,9 +41,9 @@ export class PedidoRepository {
 
         try {
             const resultadoPedido = await executarSQL(queryPedido, []);
-            console.log('Tabela produto criada: ', resultadoPedido);
             const resultadoPedidoProduto = await executarSQL(queryPedidoProduto, []);
-            console.log('Tabela produto criada: ', resultadoPedidoProduto);
+            console.log('Tabela pedido criada: ', resultadoPedido);
+            console.log('Tabela pedido_produto criada: ', resultadoPedidoProduto);
         } catch (err: any) {
             console.error('Erro ao criar a tabela produto: ', err);
         }
@@ -76,11 +76,11 @@ export class PedidoRepository {
 
     async buscarPedidoPorID(id: number): Promise<Pedido> {
         const queryPedidoProduto = `SELECT * FROM pedido WHERE id = ? AND estado = 'aberto'`;
-        const resultadoPedidoProduto = await executarSQL(queryPedidoProduto, [id]);
-        const pedido = resultadoPedidoProduto[0];
+        const resultado = await executarSQL(queryPedidoProduto, [id]);
+        const pedido = resultado[0];
 
-        if (pedido == undefined) {
-            console.log('Pedido não encontrado: ', resultadoPedidoProduto);
+        if (!pedido) {
+            console.log('Pedido não encontrado');
             throw new Error("Pedido não encontrado");
         }
 
@@ -94,7 +94,7 @@ export class PedidoRepository {
         VALUES(?, ?, ?)`;
         const resultado = await executarSQL(query, [pedido_id, produto_id, quantidade]);
         console.log('Produto adicionado ao pedido: ', resultado);
-        return this.buscarPedidoPorID(pedido_id);
+        return await this.buscarPedidoPorID(pedido_id);
     }
 
     async rmvProdutoDePedido(pedido_id: number, produto_id: number): Promise<Pedido> {
@@ -103,7 +103,7 @@ export class PedidoRepository {
         WHERE pedido_id = ? AND produto_id = ?`;
         const resultado = await executarSQL(query, [pedido_id, produto_id]);
         console.log('Produto removido do pedido: ', resultado);
-        return this.buscarPedidoPorID(pedido_id);
+        return await this.buscarPedidoPorID(pedido_id);
     }
 
     async editProdutoDePedido(pedido_id: number, produto_id: number, quantidade: number): Promise<Pedido> {
@@ -113,17 +113,16 @@ export class PedidoRepository {
         WHERE pedido_id = ? AND produto_id = ?`;
         const resultado = await executarSQL(query, [quantidade, pedido_id, produto_id]);
         console.log('Quantidade do produto no pedido alterada: ', resultado);
-        return this.buscarPedidoPorID(pedido_id);
+        return await this.buscarPedidoPorID(pedido_id);
     }   
 
-    async fecharPedido(pedido_id: number): Promise<Pedido> {
+    async fecharPedido(pedido_id: number): Promise<void> {
         const query = `
         UPDATE pedido 
         SET estado = ? 
         WHERE id = ?`;
         const resultado = await executarSQL(query, ["fechado", pedido_id]);
         console.log('Pedido fechado: ', resultado);
-        return this.buscarPedidoPorID(pedido_id);
     }
 
     private async obterUsuarioPorCPF(cpf: string): Promise<UsuarioViewDto> {
@@ -150,7 +149,8 @@ export class PedidoRepository {
         const resultadoProdutos = await executarSQL(queryProdutos, [pedido.id]);
 
         if (resultadoPedidoProduto.length == 0) {
-            throw new Error("Não há produtos no pedido");
+            console.log('Nenhum produto encontrado para o pedido: ', pedido.id);
+            return new Pedido(pedido.usuario_cpf, pedido.id, []);
         }
 
         const pedidoProduto = this.converterPedidoProduto(pedido, resultadoPedidoProduto, resultadoProdutos);
@@ -166,7 +166,7 @@ export class PedidoRepository {
                 throw new Error(`Produto com id ${pp.produto_id} não encontrado`);
             }
             const produto = new Produto(produtoData.nome, produtoData.URL, produtoData.descricao, produtoData.preco, produtoData.categoria, produtoData.disponivel, produtoData.id);
-            return new PedidoProduto(pedido, produto, pp.qtd);
+            return new PedidoProduto(pedido.id, produto, pp.qtd, pp.id);
         });
     }
 }

@@ -29,9 +29,9 @@ export class PedidoService {
             throw new Error('Faltam informações para adicionar o produto ao pedido.');
         }
         if(await this.existePedidoID(produto.pedido_id)){
-            this.pedidoRepository.addProdutoAPedido(produto.pedido_id, produto.produto_id, produto.quantidade);
+            await this.pedidoRepository.addProdutoAPedido(produto.pedido_id, produto.produto_id, produto.quantidade);
         }
-        return this.pedidoRepository.buscarPedidoPorID(produto.pedido_id);
+        return await this.pedidoRepository.buscarPedidoPorID(produto.pedido_id);
     }
 
     async alterarQtdProdutoPedido(produto: PedidoProdutoInsertEditDto){
@@ -39,7 +39,7 @@ export class PedidoService {
             throw new Error('Faltam informações para alterar a quantidade do produto no pedido.');
         }
         if(await this.existePedidoID(produto.pedido_id)){
-            this.pedidoRepository.editProdutoDePedido(produto.pedido_id, produto.produto_id, produto.quantidade);
+            await this.pedidoRepository.editProdutoDePedido(produto.pedido_id, produto.produto_id, produto.quantidade);
         }
         return this.pedidoRepository.buscarPedidoPorID(produto.pedido_id);
     }
@@ -52,6 +52,15 @@ export class PedidoService {
             this.pedidoRepository.rmvProdutoDePedido(produto.pedido_id, produto.produto_id);
         }
         return this.pedidoRepository.buscarPedidoPorID(produto.pedido_id);
+    }
+
+    async fecharPedido(pedido_id: number): Promise<void> {
+        if(!pedido_id){
+            throw new Error('Insira o ID do pedido para fechá-lo.');
+        }
+        if(await this.existePedidoID(pedido_id)){
+            return this.pedidoRepository.fecharPedido(pedido_id);
+        }
     }
     
     private async existePedidoCPF(cpf: string): Promise<boolean> {

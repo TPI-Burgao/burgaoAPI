@@ -87,14 +87,13 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "UsuarioViewDto": {
+    "PedidoProduto": {
         "dataType": "refObject",
         "properties": {
-            "cpf": {"dataType":"string","required":true},
-            "nome": {"dataType":"string","required":true},
-            "email": {"dataType":"string","required":true},
-            "telefone": {"dataType":"string","required":true},
-            "dataNascimento": {"dataType":"datetime","required":true},
+            "id": {"dataType":"double","required":true},
+            "pedido_id": {"dataType":"double","required":true},
+            "produto": {"ref":"Produto","required":true},
+            "quantidade": {"dataType":"double","required":true},
         },
         "additionalProperties": false,
     },
@@ -103,20 +102,29 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "id": {"dataType":"double","required":true},
-            "usuario": {"ref":"UsuarioViewDto","required":true},
+            "usuario_cpf": {"dataType":"string","required":true},
             "produtos": {"dataType":"array","array":{"dataType":"refObject","ref":"PedidoProduto"},"required":true},
             "estado": {"dataType":"string","required":true},
+            "pagamento": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "PedidoProduto": {
+    "PedidoProdutoInsertEditDto": {
         "dataType": "refObject",
         "properties": {
-            "id": {"dataType":"double","required":true},
-            "pedido": {"ref":"Pedido","required":true},
-            "produto": {"ref":"Produto","required":true},
+            "pedido_id": {"dataType":"double","required":true},
+            "produto_id": {"dataType":"double","required":true},
             "quantidade": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "PedidoProdutoRemoveDto": {
+        "dataType": "refObject",
+        "properties": {
+            "pedido_id": {"dataType":"double","required":true},
+            "produto_id": {"dataType":"double","required":true},
         },
         "additionalProperties": false,
     },
@@ -448,6 +456,167 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'cadastrarPedido',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsPedidoController_cadastrarProdutoPedido: Record<string, TsoaRoute.ParameterSchema> = {
+                dto: {"in":"body","name":"dto","required":true,"ref":"PedidoProdutoInsertEditDto"},
+                success: {"in":"res","name":"201","required":true,"dataType":"union","subSchemas":[{"ref":"Pedido"},{"dataType":"undefined"}]},
+                fail: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
+        };
+        app.post('/pedidos/produtos',
+            ...(fetchMiddlewares<RequestHandler>(PedidoController)),
+            ...(fetchMiddlewares<RequestHandler>(PedidoController.prototype.cadastrarProdutoPedido)),
+
+            async function PedidoController_cadastrarProdutoPedido(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsPedidoController_cadastrarProdutoPedido, request, response });
+
+                const controller = new PedidoController();
+
+              await templateService.apiHandler({
+                methodName: 'cadastrarProdutoPedido',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsPedidoController_exibirPedido: Record<string, TsoaRoute.ParameterSchema> = {
+                cpf: {"in":"path","name":"cpf","required":true,"dataType":"string"},
+                success: {"in":"res","name":"200","required":true,"dataType":"union","subSchemas":[{"ref":"Pedido"},{"dataType":"undefined"}]},
+                fail: {"in":"res","name":"404","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
+        };
+        app.get('/pedidos/:cpf',
+            ...(fetchMiddlewares<RequestHandler>(PedidoController)),
+            ...(fetchMiddlewares<RequestHandler>(PedidoController.prototype.exibirPedido)),
+
+            async function PedidoController_exibirPedido(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsPedidoController_exibirPedido, request, response });
+
+                const controller = new PedidoController();
+
+              await templateService.apiHandler({
+                methodName: 'exibirPedido',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsPedidoController_alterarProdutoPedido: Record<string, TsoaRoute.ParameterSchema> = {
+                dto: {"in":"body","name":"dto","required":true,"ref":"PedidoProdutoInsertEditDto"},
+                success: {"in":"res","name":"200","required":true,"dataType":"union","subSchemas":[{"ref":"Pedido"},{"dataType":"undefined"}]},
+                fail: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
+        };
+        app.put('/pedidos/produtos',
+            ...(fetchMiddlewares<RequestHandler>(PedidoController)),
+            ...(fetchMiddlewares<RequestHandler>(PedidoController.prototype.alterarProdutoPedido)),
+
+            async function PedidoController_alterarProdutoPedido(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsPedidoController_alterarProdutoPedido, request, response });
+
+                const controller = new PedidoController();
+
+              await templateService.apiHandler({
+                methodName: 'alterarProdutoPedido',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsPedidoController_removerProdutoPedido: Record<string, TsoaRoute.ParameterSchema> = {
+                dto: {"in":"body","name":"dto","required":true,"ref":"PedidoProdutoRemoveDto"},
+                success: {"in":"res","name":"200","required":true,"dataType":"union","subSchemas":[{"ref":"Pedido"},{"dataType":"undefined"}]},
+                fail: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
+        };
+        app.delete('/pedidos/produtos',
+            ...(fetchMiddlewares<RequestHandler>(PedidoController)),
+            ...(fetchMiddlewares<RequestHandler>(PedidoController.prototype.removerProdutoPedido)),
+
+            async function PedidoController_removerProdutoPedido(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsPedidoController_removerProdutoPedido, request, response });
+
+                const controller = new PedidoController();
+
+              await templateService.apiHandler({
+                methodName: 'removerProdutoPedido',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsPedidoController_fecharPedido: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+                dto: {"in":"body","name":"dto","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"pagamento":{"dataType":"string","required":true}}},
+                success: {"in":"res","name":"200","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
+                fail: {"in":"res","name":"400","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
+        };
+        app.patch('/pedidos/:id/fechar',
+            ...(fetchMiddlewares<RequestHandler>(PedidoController)),
+            ...(fetchMiddlewares<RequestHandler>(PedidoController.prototype.fecharPedido)),
+
+            async function PedidoController_fecharPedido(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsPedidoController_fecharPedido, request, response });
+
+                const controller = new PedidoController();
+
+              await templateService.apiHandler({
+                methodName: 'fecharPedido',
                 controller,
                 response,
                 next,

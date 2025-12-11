@@ -3,17 +3,17 @@ import { Produto } from "./Produto";
 
 export class PedidoProduto{
     id: number;
-    pedido: Pedido;
+    pedido_id: number;
     produto: Produto;
     quantidade: number;
 
     constructor(
-        pedido: Pedido,
+        pedido_id: number,
         produto: Produto,
         quantidade: number,
         id?: number
     ){
-        this.pedido = pedido;
+        this.pedido_id = pedido_id;
         this.produto = produto;
         this.quantidade = quantidade;
         this.id = id || 0;
