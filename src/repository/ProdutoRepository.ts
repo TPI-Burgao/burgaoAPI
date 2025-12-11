@@ -25,7 +25,9 @@ export class ProdutoRepository {
             descricao VARCHAR(255) NOT NULL,
             preco decimal(8,2) NOT NULL,
             categoria VARCHAR(255) NOT NULL,
-            disponivel BOOLEAN NOT NULL
+            disponivel BOOLEAN NOT NULL,
+            promo BOOLEAN,
+            desconto INT
         )`;
 
         try {
@@ -42,6 +44,14 @@ export class ProdutoRepository {
                 VALUES(?, ?, ?, ?, ?, ?)`;
 
         const resultado = await executarSQL(query, [data.nome, data.URL, data.descricao, data.preco, data.categoria, data.disponivel]);
+        if(data.promo !== undefined && data.desconto !== undefined){
+            const promoQuery = `
+            UPDATE produto
+            SET promo = ?, desconto = ?
+            WHERE id = ?`;
+            await executarSQL(promoQuery, [data.promo, data.desconto, resultado.insertId]);
+        }
+
         console.log('Produto inserido: ', resultado);
         return new Produto(
             data.nome,
@@ -49,7 +59,10 @@ export class ProdutoRepository {
             data.descricao,
             data.preco,
             data.categoria,
-            data.disponivel);
+            data.disponivel,
+            (data.promo !== undefined) ? data.promo : false, 
+            (data.desconto !== undefined) ? data.desconto : 0
+        );
     }
 
     async ListarProdutos(): Promise<Produto[]> {
