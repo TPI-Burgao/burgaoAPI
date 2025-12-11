@@ -15,7 +15,9 @@ export class ProdutoService {
             data.descricao,
             data.preco,
             data.categoria,
-            data.disponivel
+            data.disponivel,
+            data.promo,
+            data.desconto
         );
         return this.produtoRepository.InsertProduto(produto);
     }
@@ -25,7 +27,7 @@ export class ProdutoService {
             throw new Error('Insira o ID para buscar o produto.');
         }
         if(await this.existeProduto(id)){
-            return this.produtoRepository.BuscarProdutoPorID(id);
+            return await this.produtoRepository.BuscarProdutoPorID(id);
         }
     }
 
