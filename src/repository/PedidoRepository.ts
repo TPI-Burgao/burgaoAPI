@@ -23,19 +23,21 @@ export class PedidoRepository {
     private async CreateTablePedido(): Promise<void> {
         const queryPedido =
             `CREATE TABLE IF NOT EXISTS pedido(
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            usuario_cpf VARCHAR(255) NOT NULL,
-            estado VARCHAR(255) NOT NULL
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                usuario_cpf VARCHAR(255) NOT NULL,
+                estado VARCHAR(255) NOT NULL
+                FOREIGN KEY (usuario_cpf) REFERENCES usuario(cpf)
             );
             `;
+
         const queryPedidoProduto = `
             CREATE TABLE IF NOT EXISTS pedido_produto(
-            id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            pedido_id INT NOT NULL,
-            produto_id INT NOT NULL,
-            qtd int NOT NULL,
-            FOREIGN KEY (pedido_id) REFERENCES pedido(id),
-            FOREIGN KEY (produto_id) REFERENCES produto(id)
+                id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                pedido_id INT NOT NULL,
+                produto_id INT NOT NULL,
+                qtd int NOT NULL,
+                FOREIGN KEY (pedido_id) REFERENCES pedido(id),
+                FOREIGN KEY (produto_id) REFERENCES produto(id)
             );
             `;
 
@@ -50,6 +52,9 @@ export class PedidoRepository {
     }
 
     async InsertPedido(data: PedidoInsertDto): Promise<Pedido> {
+        if(await this.existePedido(data.usuario_cpf)){
+            throw new Error("Já existe um pedido aberto para este usuário");
+        }
         const queryPedido = `
             INSERT INTO pedido(usuario_cpf, estado) 
                 VALUES(?, ?)`;
@@ -90,8 +95,9 @@ export class PedidoRepository {
 
     async addProdutoAPedido(pedido_id: number, produto_id: number, quantidade: number): Promise<Pedido> {
         const query = `
-        INSERT INTO pedido_produto(pedido_id, produto_id, qtd) 
-        VALUES(?, ?, ?)`;
+            INSERT INTO pedido_produto(pedido_id, produto_id, qtd) 
+                VALUES(?, ?, ?)`;
+            
         const resultado = await executarSQL(query, [pedido_id, produto_id, quantidade]);
         console.log('Produto adicionado ao pedido: ', resultado);
         return await this.buscarPedidoPorID(pedido_id);
@@ -99,8 +105,9 @@ export class PedidoRepository {
 
     async rmvProdutoDePedido(pedido_id: number, produto_id: number): Promise<Pedido> {
         const query = `
-        DELETE FROM pedido_produto 
-        WHERE pedido_id = ? AND produto_id = ?`;
+            DELETE FROM pedido_produto 
+                WHERE pedido_id = ? AND produto_id = ?`;
+
         const resultado = await executarSQL(query, [pedido_id, produto_id]);
         console.log('Produto removido do pedido: ', resultado);
         return await this.buscarPedidoPorID(pedido_id);
@@ -108,9 +115,10 @@ export class PedidoRepository {
 
     async editProdutoDePedido(pedido_id: number, produto_id: number, quantidade: number): Promise<Pedido> {
         const query = `
-        UPDATE pedido_produto
-        SET qtd = ?
-        WHERE pedido_id = ? AND produto_id = ?`;
+            UPDATE pedido_produto
+                SET qtd = ?
+                WHERE pedido_id = ? AND produto_id = ?`;
+        
         const resultado = await executarSQL(query, [quantidade, pedido_id, produto_id]);
         console.log('Quantidade do produto no pedido alterada: ', resultado);
         return await this.buscarPedidoPorID(pedido_id);
@@ -118,11 +126,20 @@ export class PedidoRepository {
 
     async fecharPedido(pedido_id: number): Promise<void> {
         const query = `
-        UPDATE pedido 
-        SET estado = ? 
-        WHERE id = ?`;
+            UPDATE pedido 
+                SET estado = ? 
+                WHERE id = ?`;
         const resultado = await executarSQL(query, ["fechado", pedido_id]);
         console.log('Pedido fechado: ', resultado);
+    }
+
+    private async existePedido(cpf: string): Promise<boolean> {
+        const query = `SELECT * FROM pedido WHERE usuario_cpf = ? AND estado = 'aberto'`;
+        const resultado = await executarSQL(query, [cpf]);
+        if(resultado.length == 0){
+            return false;
+        }
+        return true;
     }
 
     private async obterUsuarioPorCPF(cpf: string): Promise<UsuarioViewDto> {
