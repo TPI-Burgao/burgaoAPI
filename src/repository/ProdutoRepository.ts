@@ -103,9 +103,19 @@ export class ProdutoRepository {
             UPDATE produto 
             SET nome = ?, URL = ?, descricao = ?, preco = ?, categoria = ?, disponivel = ?
             WHERE id = ?`;
+            
         const resultado = await executarSQL(query, [data.nome, data.URL, data.descricao, data.preco, data.categoria, data.disponivel, id]);
+        
+        if(data.promo !== undefined && data.desconto !== undefined){
+            const promoQuery = `
+            UPDATE produto
+            SET promo = ?, desconto = ?
+            WHERE id = ?`;
+            await executarSQL(promoQuery, [data.promo, data.desconto, id]);
+        }
+        
         console.log('Produto atualizado: ', resultado);
-        return this.BuscarProdutoPorID(id);
+        return await this.BuscarProdutoPorID(id);
     }
 
     async DeleteProduto(id: number): Promise<void> {
