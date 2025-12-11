@@ -92,7 +92,9 @@ export class ProdutoRepository {
             produto.descricao,
             produto.preco,
             produto.categoria,
-            produto.disponivel
+            produto.disponivel,
+            (produto.promo !== undefined) ? produto.promo : false, 
+            (produto.desconto !== undefined) ? produto.desconto : 0
         );
     }
 
