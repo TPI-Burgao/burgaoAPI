@@ -2,6 +2,7 @@ import { UsuarioRepository } from '../repository/UsuarioRepository';
 import { Usuario } from '../model/entity/Usuario';
 import { UsuarioInsertDto } from '../model/dto/UsuarioInsertDto';
 import { UsuarioUpdateDto } from '../model/dto/UsuarioUpdateDto';
+import { UsuarioViewDto } from '../model/dto/UsuarioViewDto';
 
 export class UsuarioService {
     private usuarioRepository = UsuarioRepository.getInstance();
@@ -23,7 +24,7 @@ export class UsuarioService {
         };
     }
 
-    async buscarUsuarioCPF(cpf: string): Promise<Usuario | undefined> {
+    async buscarUsuarioCPF(cpf: string): Promise<UsuarioViewDto | undefined> {
         if(!cpf){
             throw new Error('Insira o CPF para buscar o usuário.');
         }
@@ -32,12 +33,21 @@ export class UsuarioService {
         }
     }
 
-    async atualizarUsuario(data: UsuarioUpdateDto, cpf: string): Promise<Usuario | undefined> {
+    async atualizarUsuario(data: UsuarioUpdateDto, cpf: string): Promise<UsuarioViewDto | undefined> {
         if( !data || !cpf){
             throw new Error('Faltam informações para atualizar o usuário.');
         }
         if(this.validarEmail(data.email) && await this.existeUsuario(cpf)){
             return await this.usuarioRepository.UpdateUsuario(data, cpf);
+        }
+    }
+
+    async atualizarSenhaUsuario(senhaAntiga: string, novaSenha: string, cpf: string): Promise<void> {
+        if(!senhaAntiga || !novaSenha || !cpf){
+            throw new Error('Faltam informações para atualizar a senha do usuário.');
+        }
+        if(await this.existeUsuario(cpf)){
+            await this.usuarioRepository.UpdateSenhaUsuario(senhaAntiga, novaSenha, cpf);
         }
     }
 
