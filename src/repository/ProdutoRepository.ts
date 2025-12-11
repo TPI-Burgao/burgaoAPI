@@ -19,16 +19,16 @@ export class ProdutoRepository {
     private async CreateTableProduto(): Promise<void> {
         const query =
             `CREATE TABLE IF NOT EXISTS produto(
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            nome VARCHAR(255) NOT NULL,
-            URL VARCHAR(255) NOT NULL,
-            descricao VARCHAR(255) NOT NULL,
-            preco decimal(8,2) NOT NULL,
-            categoria VARCHAR(255) NOT NULL,
-            disponivel BOOLEAN NOT NULL,
-            promo BOOLEAN,
-            desconto INT
-        )`;
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                nome VARCHAR(255) NOT NULL,
+                URL VARCHAR(255) NOT NULL,
+                descricao VARCHAR(255) NOT NULL,
+                preco decimal(8,2) NOT NULL,
+                categoria VARCHAR(255) NOT NULL,
+                disponivel BOOLEAN NOT NULL,
+                promo BOOLEAN,
+                desconto INT
+            )`;
 
         try {
             const resultado = await executarSQL(query, []);
@@ -42,17 +42,19 @@ export class ProdutoRepository {
         const query = `
             INSERT INTO produto(nome, URL, descricao, preco, categoria, disponivel) 
                 VALUES(?, ?, ?, ?, ?, ?)`;
-
+                
         const resultado = await executarSQL(query, [data.nome, data.URL, data.descricao, data.preco, data.categoria, data.disponivel]);
-        if(data.promo !== undefined && data.desconto !== undefined){
-            const promoQuery = `
-            UPDATE produto
-            SET promo = ?, desconto = ?
-            WHERE id = ?`;
-            await executarSQL(promoQuery, [data.promo, data.desconto, resultado.insertId]);
-        }
-
         console.log('Produto inserido: ', resultado);
+
+        if(data.promo !== undefined && data.desconto !== undefined){
+            const queryPromo = `
+                UPDATE produto
+                SET promo = ?, desconto = ?
+                WHERE id = ?`;
+
+            await executarSQL(queryPromo, [data.promo, data.desconto, resultado.insertId]);
+        }
+                
         return new Produto(
             data.nome,
             data.URL,
@@ -61,7 +63,8 @@ export class ProdutoRepository {
             data.categoria,
             data.disponivel,
             (data.promo !== undefined) ? data.promo : false, 
-            (data.desconto !== undefined) ? data.desconto : 0
+            (data.desconto !== undefined) ? data.desconto : 0,
+            resultado.insertId
         );
     }
 
@@ -94,24 +97,25 @@ export class ProdutoRepository {
             produto.categoria,
             produto.disponivel,
             (produto.promo !== undefined) ? produto.promo : false, 
-            (produto.desconto !== undefined) ? produto.desconto : 0
+            (produto.desconto !== undefined) ? produto.desconto : 0,
+            produto.id
         );
     }
 
     async UpdateProduto(data: ProdutoDto, id: number): Promise<Produto | undefined> {
         const query = `
             UPDATE produto 
-            SET nome = ?, URL = ?, descricao = ?, preco = ?, categoria = ?, disponivel = ?
-            WHERE id = ?`;
+                SET nome = ?, URL = ?, descricao = ?, preco = ?, categoria = ?, disponivel = ?
+                WHERE id = ?`;
             
         const resultado = await executarSQL(query, [data.nome, data.URL, data.descricao, data.preco, data.categoria, data.disponivel, id]);
         
         if(data.promo !== undefined && data.desconto !== undefined){
-            const promoQuery = `
-            UPDATE produto
-            SET promo = ?, desconto = ?
-            WHERE id = ?`;
-            await executarSQL(promoQuery, [data.promo, data.desconto, id]);
+            const queryPromo = `
+                UPDATE produto
+                SET promo = ?, desconto = ?
+                WHERE id = ?`;
+            await executarSQL(queryPromo, [data.promo, data.desconto, id]);
         }
         
         console.log('Produto atualizado: ', resultado);
