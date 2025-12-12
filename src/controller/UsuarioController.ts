@@ -26,20 +26,6 @@ export class UsuarioController {
         }
     }
 
-    @Get("{cpf}")
-    async exibirUsuario(
-        @Path("cpf") cpf: string,
-        @Res() success: TsoaResponse<200, UsuarioViewDto | undefined>,
-        @Res() fail: TsoaResponse<404, { message: string }>
-    ) {
-        try {
-            const usuario = await this.usuarioService.buscarUsuarioCPF(cpf);
-            return success(200, usuario);
-        } catch (error: any) {
-            return fail(404, { message: `Usuário não encontrado: ${error.message}` });
-        }
-    }
-
     @Get("login")
     async logarUsuario(
         @Query() email: string, 
@@ -54,6 +40,20 @@ export class UsuarioController {
             return fail(404, { message: `Usuário não encontrado: ${error.message}` });
         }
     }
+
+    @Get("{cpf}")
+    async exibirUsuario(
+        @Path("cpf") cpf: string,
+        @Res() success: TsoaResponse<200, UsuarioViewDto | undefined>,
+        @Res() fail: TsoaResponse<404, { message: string }>
+    ) {
+        try {
+            const usuario = await this.usuarioService.buscarUsuarioCPF(cpf);
+            return success(200, usuario);
+        } catch (error: any) {
+            return fail(404, { message: `Usuário não encontrado: ${error.message}` });
+        }    
+    }    
 
 
 
