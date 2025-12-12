@@ -7,5 +7,5 @@ const swaggerFile = path.resolve(process.cwd(), 'swagger.json');
 const swaggerSpec = JSON.parse(fs.readFileSync(swaggerFile, 'utf8'));
 
 export const setupSwagger = (app: Express) => {
-    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    app.use('/burgaoAPI/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 }
