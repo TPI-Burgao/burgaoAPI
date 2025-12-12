@@ -1,9 +1,22 @@
 import express from 'express';
 import { RegisterRoutes } from './routes/routes';
 import { setupSwagger } from './config/swagger';
+import cors from 'cors';
 
 const app = express();
-//const PORT = 3090;
+
+app.use(cors({
+  origin: 'https://burgaoo.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(cors({
+  origin: 'https://burgaoo-lmc7dcdy7-mizunoyudis-projects.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 const PORT = process.env.PORT || 3090;
 
 app.use(express.json());
