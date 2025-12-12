@@ -72,6 +72,26 @@ export class UsuarioRepository{
         );
     }
 
+    async BuscarUsuarioPorEmailSenha(email:string, senha:string):Promise<UsuarioViewDto|undefined>{
+        const query = `SELECT * FROM usuario WHERE email = ? AND senha = ?`;
+        const resultado = await executarSQL(query, [email, senha]);
+        const usuario = resultado[0];
+
+        if (!usuario) {
+            console.log('Usuário não encontrado com essas credenciais');
+            return undefined;
+        }
+
+        console.log('Usuário encontrado:', usuario);
+        return new UsuarioViewDto(
+            usuario.cpf,
+            usuario.nome,
+            usuario.email,
+            usuario.telefone,
+            usuario.data_nasc
+        );
+    }
+
     async UpdateUsuario(data: UsuarioUpdateDto, cpf: string): Promise<UsuarioViewDto | undefined>{
         const query = `
             UPDATE usuario 

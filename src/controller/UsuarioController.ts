@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Path, Post, Put, Res, Route, Tags, TsoaResponse} from "tsoa";
+import { Body, Delete, Get, Path, Post, Put, Query, Res, Route, Tags, TsoaResponse} from "tsoa";
 import { UsuarioService } from "../service/UsuarioService";
 import { UsuarioInsertDto } from "../model/dto/UsuarioInsertDto";
 import { Usuario } from "../model/entity/Usuario";
@@ -39,6 +39,23 @@ export class UsuarioController {
             return fail(404, { message: `Usuário não encontrado: ${error.message}` });
         }
     }
+
+    @Get("login")
+    async logarUsuario(
+        @Query() email: string, 
+        @Query() senha:string,
+        @Res() success: TsoaResponse<200, UsuarioViewDto | undefined>,
+        @Res() fail: TsoaResponse<404, { message: string }>
+    ){
+        try {
+            const usuario = await this.usuarioService.buscarUsuarioEmailSenha(email, senha);
+            return success(200, usuario);
+        } catch (error: any) {
+            return fail(404, { message: `Usuário não encontrado: ${error.message}` });
+        }
+    }
+
+
 
     @Put("{cpf}")
     async atualizarUsuario(

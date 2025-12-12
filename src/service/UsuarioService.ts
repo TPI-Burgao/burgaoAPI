@@ -33,6 +33,13 @@ export class UsuarioService {
         }
     }
 
+    async buscarUsuarioEmailSenha(email: string, senha: string): Promise<UsuarioViewDto | undefined>{
+        if(!email || !senha){
+            throw new Error('Email ou senha vazios.');
+        }
+        return this.usuarioRepository.BuscarUsuarioPorEmailSenha(email, senha);
+    }
+
     async atualizarUsuario(data: UsuarioUpdateDto, cpf: string): Promise<UsuarioViewDto | undefined> {
         if( !data || !cpf){
             throw new Error('Faltam informações para atualizar o usuário.');
