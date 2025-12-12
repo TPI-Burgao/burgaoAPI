@@ -223,6 +223,39 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsUsuarioController_logarUsuario: Record<string, TsoaRoute.ParameterSchema> = {
+                email: {"in":"query","name":"email","required":true,"dataType":"string"},
+                senha: {"in":"query","name":"senha","required":true,"dataType":"string"},
+                success: {"in":"res","name":"200","required":true,"dataType":"union","subSchemas":[{"ref":"UsuarioViewDto"},{"dataType":"undefined"}]},
+                fail: {"in":"res","name":"404","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true}}},
+        };
+        app.get('/usuarios/login',
+            ...(fetchMiddlewares<RequestHandler>(UsuarioController)),
+            ...(fetchMiddlewares<RequestHandler>(UsuarioController.prototype.logarUsuario)),
+
+            async function UsuarioController_logarUsuario(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsUsuarioController_logarUsuario, request, response });
+
+                const controller = new UsuarioController();
+
+              await templateService.apiHandler({
+                methodName: 'logarUsuario',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsUsuarioController_atualizarUsuario: Record<string, TsoaRoute.ParameterSchema> = {
                 cpf: {"in":"path","name":"cpf","required":true,"dataType":"string"},
                 dto: {"in":"body","name":"dto","required":true,"ref":"UsuarioUpdateDto"},
