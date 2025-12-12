@@ -5,17 +5,7 @@ import cors from 'cors';
 
 const app = express();
 
-app.use(cors({
-  origin: 'https://burgaoo.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-app.use(cors({
-  origin: 'https://burgaoo-lmc7dcdy7-mizunoyudis-projects.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors());
 
 const PORT = process.env.PORT || 3090;
 
