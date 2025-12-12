@@ -8,6 +8,10 @@ const PORT = process.env.PORT || 3090;
 
 app.use(express.json());
 
+app.get("/", (req, res) => {
+    res.send("API funcionando! Acesse /burgaoAPI/api-docs");
+});
+
 const apiRouter = express.Router();
 RegisterRoutes(apiRouter);
 
