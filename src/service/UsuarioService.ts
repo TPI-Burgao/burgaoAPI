@@ -37,6 +37,7 @@ export class UsuarioService {
         if(!email || !senha){
             throw new Error('Email ou senha vazios.');
         }
+        this.validarEmail(email);
         return this.usuarioRepository.BuscarUsuarioPorEmailSenha(email, senha);
     }
 
